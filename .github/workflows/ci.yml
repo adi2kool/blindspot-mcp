@@ -1,0 +1,62 @@
+name: CI
+
+# The boundary is only credible if the proof runs on every change. This gates
+# merges on the same four things we verify by hand: the test suite, the adaptive
+# red-team (the defense must still hold), the detector's precision/recall bar, and
+# a clean dependency audit. Nothing here reaches the network except the package
+# installs and pip-audit's advisory feed.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: tests / redteam / benchmark (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Sync (locked)
+        run: uv sync --frozen --python ${{ matrix.python-version }}
+
+      - name: Test suite
+        run: uv run pytest -q
+
+      - name: Adaptive red-team (fails if a non-residual attack reaches the instruction path)
+        run: uv run blindspot redteam
+
+      - name: Detector benchmark (fails below the recall / false-positive bar)
+        run: uv run python benchmark/run.py
+
+      - name: Build sdist + wheel
+        run: uv build
+
+  audit:
+    name: dependency vulnerability audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --frozen --python 3.12
+      - name: pip-audit (audits the synced project environment)
+        run: uv run --with pip-audit pip-audit

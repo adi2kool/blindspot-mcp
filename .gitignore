@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Environments
+.venv/
+venv/
+.env
+
+# uv
+# (uv.lock is committed intentionally)
+
+# Testing
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Claude Code local state
+.claude/settings.local.json
+.claude/worktrees/
+
+# OS
+.DS_Store
+
+# Stray agent scratchpad (never commit)
+scratchpad/

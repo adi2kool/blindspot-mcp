@@ -1,0 +1,4750 @@
+{
+ "version": "x-mcp-provenance/prevalence-source-v0",
+ "_comment": "Breadth sweep: all npm packages matching 'mcp' discovered via the npm search API. License resolved from registry metadata; unlicensed -> skipped. Static download+scan, no execution.",
+ "packages": [
+  {
+   "name": "@0xmonaco/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@1mbrain/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@2sio/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@_davideast/stitch-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@a-bonus/google-docs-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@aashari/mcp-server-atlassian-bitbucket",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@aashari/mcp-server-atlassian-confluence",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@aashari/mcp-server-atlassian-jira",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@abhaybabbar/retellai-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@abhiz123/todoist-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@aborruso/ckan-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ace-sdk/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ada-mcp/launcher",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ada-mcp/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@adamhancock/bullmq-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@adenot/mcp-google-search",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ag-ui/mcp-apps-middleware",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ag-ui/mcp-middleware",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@agent-infra/mcp-server-browser",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@agent-infra/mcp-server-filesystem",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@agent-infra/mcp-shared",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@agent-inspect/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@agent-vm/mcp-portal",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@agentdeskai/browser-tools-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@agentfare/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@agentled/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@agentmark-ai/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@agentmemory/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@agentsgang/azure-devops-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@agimon-ai/log-sink-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@agimon-ai/mcp-proxy",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@agimon-ai/video-editor-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@agimon-ai/workflow-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@agledger/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ai-sdk/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@aibtc/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@aifinpay/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@aikidosec/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@aiondadotcom/mcp-ssh",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@airtable/mcp-cli",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@akoskomuves/appstoreconnect-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@akutishevsky/lunchmoney-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@alchemy/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@aleph-alpha/lib-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@alphasense/graphql-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ama-mcp/angular",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ama-mcp/core",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ama-mcp/otter",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ama-sdk/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@amap/amap-maps-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ampless/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@anaisbetts/mcp-youtube",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@angelogiacco/elevenlabs-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@angiejones/mcp-selenium",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@anip-dev/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ankimcp/anki-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ansvar/mcp-sqlite",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@anthropic-ai/mcpb",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@antonytm/mcp-sitecore-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@antv/mcp-server-chart",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@anyproto/anytype-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@apex-inc/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@api-now/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@apicity/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@apify/actors-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@apify/mcpc",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@appium/mcp-documentation",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@aputime/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@arabold/docs-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@arikusi/deepseek-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@arizeai/openinference-instrumentation-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@arizeai/phoenix-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@armature-tech/mcp-analytics",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@assistant-ui/mcp-docs-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@atlassian-dc-mcp/bitbucket",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@atlassian-dc-mcp/common",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@atlassian-dc-mcp/confluence",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@atlassian-dc-mcp/jira",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@atlassian/mcp-compressor",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@auth0/auth0-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@automatalabs/mcp-server-playwright",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@automattic/mcp-wordpress-remote",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@avallon-labs/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@avodado/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@aws/nx-plugin-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@aws/run-mcp-servers-with-aws-lambda",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ax-ado-mcp/mcp-server-azure-devops-enhanced",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@azure-devops/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@azure/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@azure/mcp-darwin-arm64",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@azure/mcp-darwin-x64",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@azure/mcp-linux-arm64",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@azure/mcp-linux-x64",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@azure/mcp-template",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@azure/mcp-template-linux-x64",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@azure/mcp-template-win32-arm64",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@azure/mcp-win32-arm64",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@azure/mcp-win32-x64",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@babylonjs/mcp-servers",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@baidumap/mcp-server-baidu-map",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@barivia/barsom-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@bbengamin/paperclip-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@benborla29/mcp-server-mysql",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@berthojoris/mcp-mysql-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@besales/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@bharathvaj/whois-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@billingserv/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@bit2me/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@bitbonsai/mcpvault",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@bithumb-official/bithumb-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@bitwarden/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@blackhole-dex/blackhole-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@blocks-network/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@blueprint-chart/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@brave/brave-search-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@breadstone/archipel-platform-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@bretterer/forge-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@bridge_gpt/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@brightdata/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@browserbasehq/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@browserless.io/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@browsermcp/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@browserstack/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@buildpad/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@burger-editor/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@burtthecoder/mcp-shodan",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@caffeineai/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@calypsohq/multimodal-rag-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@camsoft/mcp-sdk",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@cap-js/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@capivv/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@caracalai/transport-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@cariot-labs/cariot-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@cexll/codex-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@cgize/mcp-think-tool",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@chakra-ui/react-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@channel.io/tolgee-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@chatwork/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@chkp/mcp-utils",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@circleci/mcp-server-circleci",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@civic/auth-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@civic/mcp-client",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@claude-flow/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@clayhq/clay-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@clerk/mcp-tools",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@clipform/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@cloudbase/cloudbase-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@cloudflare/mcp-server-cloudflare",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@cloudflare/playwright-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@cmd8/excalidraw-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@cmssy/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@cocal/google-calendar-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@codacy/codacy-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@code-indexer/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@codefuturist/email-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@codelytv/mcp-client",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@coding-solo/godot-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@cognitionai/metabase-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@cognium-ai/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@coinbase/cds-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@commercetools/nimbus-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@configcat/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@confluentinc/mcp-confluent",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@content-island/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@contentful/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@contextium/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@contextvm/mcp-sdk",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@contorium/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@convertcom/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@cplace/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@crossdelta/pf-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@csszyx/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@currents/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@cyanheads/git-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@cyanheads/mcp-ts-core",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@cyanheads/pubmed-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@czap/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@daileyos/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@dakatan/mcp-mattermost",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@damatjs/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@davewind/mysql-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@dbx-app/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@decodo/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@deerdawn/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@dekause/mcp-server-trello",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@delorenj/mcp-server-ticketmaster",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@delorenj/mcp-server-trello",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@democratize-technology/vikunja-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@descope/mcp-express",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@diagrampilot/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@dialpad/dialtone-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@didcid/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@digitalocean/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@directus/content-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@discourse/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@diskd-ai/email-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@diviops/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@djankies/vitest-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@doist/todoist-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@doitintl/doit-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@dokploy/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@donmai/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@dopplerhq/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@dotcontext/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@drawio/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@driflyte/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@dropthis/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@dxos/mcp-client",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@dynatrace-oss/dynatrace-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@easbot/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@edgescaleai/cube-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@edicarlos.lds/businessmap-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@eggjs/mcp-client",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@eggjs/mcp-proxy",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@eggjs/tegg-mcp-client",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ehrocks/fe-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@electric-ax/agents-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@elgato/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@elixium.ai/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@elizaos/plugin-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@elnora-ai/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@enfyra/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@epic-web/workshop-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@epicdm/flowstate-mcp-web-transport",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@eraserlabs/eraser-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ericthered926/duckduckgo-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@esaio/esa-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@eslint/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@eui/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@eventcatalog/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@evermore.work/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@executeautomation/playwright-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@executor-js/mcporter",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@expo/mcp-tunnel",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@extentos/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@f4ww4z/mcp-mysql-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@fangjunjie/ssh-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@fanyangmeng/ghost-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@felores/airtable-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@figcodessolucoes/gmcps",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@finch.app/mcp-bridge",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@firfi/huly-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@florentine-ai/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@florentleveque/mural-mcp-serveur",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@floriscornel/teams-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@fluttersdk/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@fonoster/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@forestadmin/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@fractalizer/mcp-server-ticktick",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@fractalizer/mcp-server-yandex-tracker",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@fractalizer/mcp-server-yandex-wiki",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@freerouting/freerouting-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@frontal-labs/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@frontmcp/adapters",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@frontmcp/auth",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@frontmcp/plugin-remember",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@frontmcp/plugins",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@frontmcp/sdk",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@frontmcp/uipack",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@frontmcp/utils",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@fuul/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ganintegrity/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@gannonh/firebase-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@gavdi/cap-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@gbrandtio/rw-git-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@genkit-ai/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@get-technology-inc/jamf-docs-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@getlarge/fastify-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@gitee/mcp-gitee",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@gitee/mcp-gitee-linux-amd64",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@gitee/mcp-gitee-windows-amd64",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@github/computer-use-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@github/mcp-registry",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@gleanwork/configure-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@gleanwork/mcp-config-schema",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@goke/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@gongrzhe/quickchart-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@gongrzhe/server-calendar-autoauth-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@gongrzhe/server-gmail-autoauth-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@google-cloud/cloud-run-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@google-cloud/gcloud-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@google-cloud/observability-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@google-cloud/storage-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@google/jules-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@goplausible/algorand-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@grackle-ai/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@grackle-ai/mcp-stdio",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@graphai/mcp_agent",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@graphite-atlas/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@greenarmor/ges-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@growthbook/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@hazeljs/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@hebcal/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@helicone/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@henkey/postgres-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@heroku/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@heroui/native-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@heroui/react-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@hesed/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@hitmux/hitmux-context-engine-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@hiveai/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@hono-crud/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@hono/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@houtini/gemini-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@hubspot/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@hugeicons/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@huggingface/mcp-client",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@hypequery/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@hypothesi/tauri-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@i18nexus/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@idachev/mcp-javadc",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@idealyst/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@infisical/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@infrawise/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ingenx-io/valets-schema-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@inkeep/agents-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@insforge/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@instantdb/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@instawp/mcp-wp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@intlayer/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@iobroker/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@iqai/mcp-polymarket",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@isaacphi/mcp-gdrive",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@iterable/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@itm-platform/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ivotoby/openapi-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@j0hanz/fetch-url-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@jango-blockchained/homeassistant-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@jason.today/webmcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@jaypie/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@jinzcdev/leetcode-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@jinzcdev/markmap-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@jira-deploy/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@jkawwa/paperclipai-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@jl-0/jira-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@jpisnice/shadcn-ui-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@jrmc/adonis-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@json-render/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@jtrader.ai/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@k-jarzyna/mcp-miro",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@k8ika0s/mcp-tmux",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@karakeep/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kazuph/mcp-fetch",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kazuph/mcp-taskmanager",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kekwanulabs/syncline-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kentico/management-api-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kernlang/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kernlang/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kernlang/review-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kevinwatt/mcp-server-searxng",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kickflow/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kimsungwhee/apple-docs-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kimuson/modular-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kintone/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kitsra/kavio-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@knip/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kstam_wise/wise-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kubb/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kubb/plugin-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kud/mcp-datadog",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@kya-os/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@langchain/mcp-adapters",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@langwatch/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@larksuiteoapi/lark-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@launchdarkly/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@lazydino/ccxt-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@leadbay/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@leadshark/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@leakferret/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@leonardsellem/n8n-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@lerianstudio/matcher-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@letoribo/mcp-graphql-enhanced",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@letsrunit/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@leval/mcp-grafana",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@likec4/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@line/line-bot-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@lishenxydlgzs/aws-athena-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@llmindset/hf-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@llui/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@localstack/localstack-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@lockon0927/woocommerce-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@lottiefiles/creator-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@lousy-agents/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@lucairn/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@lumeo-ui/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@lunora/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@magicuidesign/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@makeplane/plane-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mantine/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mapbox/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@master/css-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mastergo/magic-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mastra/mcp-docs-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mastra/mcp-registry-registry",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@matillion/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mclawnet/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcp-abap-adt/interfaces",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcp-apps/azure-devops-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcp-apps/kusto-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcp-b/global",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcp-b/react-webmcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcp-b/transports",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcp-b/webmcp-ts-sdk",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcp-dockmaster/mcp-cryptowallet-solana",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcp-rune/mcp-rune",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcp-s/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcp-tool-kit/shared",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcp-ui/client",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcp-ui/server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcp-use/cli",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcp-use/inspector",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcp-use/modelcontextprotocol-sdk",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcpcentral/mcp-time",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcpjam/sdk",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mcpmarket/mcp-auto-install",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@md-safeedit/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@meetbot/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@memberjunction/ai-mcp-client",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@memberjunction/ai-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@memlab/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@meshy-ai/meshy-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@metorial/mcp-sdk-utils",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@metorial/mcp-session",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mgsoftwarebv/mcp-server-bridge",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@microsoft/clarity-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@microsoft/devbox-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@microsoft/fabric-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@microsoft/fabric-mcp-linux-x64",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@microsoft/fabric-mcp-win32-x64",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@microsoft/github-copilot-app-modernization-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@microsoft/powerbi-modeling-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@microsoft/powerbi-modeling-mcp-win32-x64",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@microsoft/rayfin-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@midscene/android-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@midscene/ios-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@midscene/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@midscene/web-bridge-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mieubrisse/notion-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@milaboratories/pl-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mindstone/mcp-server-fathom",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mindstone/mcp-server-google-workspace",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mindstone/mcp-server-hubspot",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mindstone/mcp-server-openai-image",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mindstone/mcp-server-slack",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mintlify/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mneme-ai/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mobilenext/mobile-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@modelstat/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@moinfra/mcp-client-sdk",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mokei/mcp-sqlite",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@molanojustin/smithsonian-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mondaydotcomorg/atp-mcp-adapter",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mondaydotcomorg/monday-api-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@moneyforward_i/admina-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mongodb-js/mcp-metrics",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mongodb-js/mcp-types",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@monocle.sh/instrumentation-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@moralisweb3/api-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@motiffcom/motiff-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mozilla/firefox-devtools-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mozilla/firefox-devtools-mcp-moz",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mseep/hyperbrowser-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mseep/linear-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mseep/linear-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mseep/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@msfeldstein/mcp-test-servers",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@muhammadsiddiq/twitter-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mui/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@myspec/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@mzxrai/mcp-webresearch",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@n24q02m/mcp-core",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@n8n/mcp-apps",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@n8n/mcp-browser",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@negokaz/excel-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@neilinger/businessmap-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@nest-mcp/server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@nestjs-mcp/server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@netlify/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@next-ai-drawio/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@next-ai-ready/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@nexus2520/bitbucket-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@nexus2520/jira-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@nocobase/plugin-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@noditlabs/nodit-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@noelclaw/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@nookplot/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@notionhq/notion-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@nuxtjs/mcp-toolkit",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@o3r/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@objectstack/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@occam-scaly/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@odgrim/mcp-datetime",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ohah/react-native-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@okx_ai/okx-trade-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@omerrgocmen/json2video-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ompo-design/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@oneuptime/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@onlyoffice/docspace-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@onmars/lunar-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@onozaty/redmine-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@onyxsecurity/mcp-gateway",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@oomkapwn/enquire-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@openacme/mcp-client",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@openbnb/mcp-server-airbnb",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@openkaiden/mcp-registry-types",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@openserp/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@opsee/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@orbitneststudio/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@orengrinker/jira-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@otskit/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@padenot/firefox-devtools-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@pageindex/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@pandacss/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@paperclipai/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@passionfroot/postgres-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@payloadcms/plugin-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@pdfgate/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@pdpp/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@peac/mappings-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@pedroaugusto04/kote-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@peekview/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@penclipai/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@peng-shawn/mermaid-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@penpot/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@perplexity-ai/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@phantom/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@picahq/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@pinecone-database/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@pinkpixel/mcpollinations",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@pinkpixel/taskflow-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@piotr-agier/google-drive-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@platformatic/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@playwright/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@pmxt/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@pollinations/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@polygraph/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@posthog/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@postman/postman-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@practicaltools/reddit-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@primeng/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@primer/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@primeuix/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@primevue/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@prismicio/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@processon/mcp-server-processon-node",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@productbrain/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@professional-wiki/mediawiki-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@programcomputer/nasa-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@progress/kendo-angular-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@progress/kendo-jquery-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@progress/kendo-react-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@progress/telerik-dpl-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@progress/telerik-reporting-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@progress/telerik-wpf-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@promptlayer/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@prysm-ai/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@public-ui/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@pubnub/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@pulumi/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@qase/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@qingflow-tech/qingflow-app-builder-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@qingflow-tech/qingflow-app-user-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@quackai/q402-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@r-huijts/strava-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@radholm/azure-devops-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ragieai/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@razorpay/blade-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@react-aria/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@realvest/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@redocly/mcp-typescript-sdk",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@refrakt-md/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@regle/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@rekog/mcp-nest",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@remnux/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@remotion/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@retell-ai/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@revealui/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@richard-stovall/opnsense-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@rijk/directus-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@rnaga/wp-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@robota-sdk/agent-transport-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@rohithgmurali/snowflakemcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@rollbar/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@roychri/mcp-server-asana",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@rudderjs/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@runhuman/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@runpod/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@rushdb/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@rushstack/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@rustledger/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@salesforce/b2c-dx-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@salesforce/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@salesforce/mcp-provider-aura-experts",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@salesforce/mcp-provider-code-analyzer",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@salesforce/mcp-provider-devops",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@salesforce/mcp-provider-dx-core",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@salesforce/mcp-provider-lwc-experts",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@salesforce/mcp-provider-metadata-enrichment",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@salesforce/mcp-provider-mobile-web",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@salesforce/mcp-provider-scale-products",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@sap-ux/fiori-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@sap/mdk-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@sassoftware/sas-score-mcp-serverjs",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@satelliteoflove/godot-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@scalogicai/n8n-nodes-mcp-enhanced",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@seed-design/docs-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@sellable/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@sentry/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@sequenzy/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@serdnaley/metabase-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@setbase/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@sgoettschkes/nirvana-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@shinzolabs/instrumentation-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@shiplightai/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@shopify/dev-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@shortcut/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@shrkcrft/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@siemens/element-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@siemens/ix-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@siemens/ix-mcp-angular",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@siemens/ix-mcp-react",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@sigmacomputing/slack-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@silkweave/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@sinch/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@skanda-yutori/mcp-send-email",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@skillsmith/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@skyramp/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@smartbear/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@smartytalent/mcp-tools",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@snokam/mcp-cvpartner",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@snokam/mcp-salesforce",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@sobree/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@socialneuron/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@socialseal/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@socketsecurity/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@softeria/ms-365-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@solapi/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@spartan-ng/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@sshadows/zendesk-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@stableops/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@storybook/addon-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@storybook/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@stripe/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@structured-world/gitlab-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@subscribe.dev/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@suekou/mcp-notion-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@sunub/obsidian-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@supabase/mcp-server-postgrest",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@supabase/mcp-server-supabase",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@supabase/mcp-utils",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@superblocksteam/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@superdoc-dev/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@suthio/redash-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@svelte-vitals/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@sveltejs/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@sylphlab/pdf-reader-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@sylphx/mcp-server-sdk",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@sylphx/pdf-reader-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@t2000/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@taazkareem/clickup-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@tableau/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@tacticlaunch/mcp-linear",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@taiga-ui/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@takuhon/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@talonic/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@talzach/mcp-angular-cli",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@tankpkg/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@tanstack/ai-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@taskade/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@tekkal/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@telora/mcp-products",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@testomatio/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@testsprite/testsprite-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@theia/ai-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@theia/ai-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@theia/ai-mcp-ui",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@thevgergroup/apollo-io-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@thirdstrandstudio/mcp-figma",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@tiberriver256/mcp-server-azure-devops",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@timesheet/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@tmcp/session-manager",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@tocharianou/mcp-server-kibana",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@tokenizin/mcp-npx-fetch",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ton/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@tonyclaw/agent-inspector-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@toolprint/hypertool-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@toolprint/mcp-logger",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@traceloop/instrumentation-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@transcend-io/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@transcend-io/mcp-server-admin",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@transcend-io/mcp-server-assessment",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@transcend-io/mcp-server-base",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@transcend-io/mcp-server-consent",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@transcend-io/mcp-server-discovery",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@transcend-io/mcp-server-dsr",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@transcend-io/mcp-server-inventory",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@transcend-io/mcp-server-preferences",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@transcend-io/mcp-server-workflows",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@translated/lara-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@transloadit/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@trustpager/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@trycompai/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@trycourier/courier-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@trylighthouse/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@tsed/cli-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@tsed/platform-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@tsmztech/mcp-server-salesforce",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ttoss/http-server-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ttpears/gitlab-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@tupper/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@twilio-alpha/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@twilio-alpha/openapi-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@typia/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@typingmind/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ui5/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ui5/webcomponents-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@umbraco-cms/mcp-dev",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@umbraco-cms/mcp-server-sdk",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@unified-product-graph/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@uniformdev/uniform-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@unisonlabs/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@univerjs-pro/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@univerjs-pro/mcp-ui",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@univerjs-pro/sheets-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@unthread-io/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@upstash/context7-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@upstash/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@urbicon-ui/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@usevyre/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@utcp/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@vantagestack/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@vantasdk/vanta-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@vapi-ai/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@variflight-ai/variflight-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@vercel/mcp-adapter",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@vercube/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@vibe-agent-toolkit/gateway-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@vibe/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@vibeframe/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@viberevert/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@visulima/vis-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@vizejs/musea-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@voltagent/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@vorim/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@vostride/agent-qa-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@vscode-mcp/vscode-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@vuetify/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@vultisig/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@vygruppen/spor-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@waiaas/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@wcag-checkr/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@wdio/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@weapp-vite/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@webiny/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@weppy/roblox-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@wiliam-ai-labs/portal-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@winor30/mcp-server-datadog",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@withone/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@withpica/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@wix/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@wong2/mcp-cli",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@wopal/mcp-server-hotnews",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@workday/canvas-kit-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@workglow/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@wrongstack/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@wundervault/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@wundr.io/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@xeroapi/xero-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@xinyoutai/markmap-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@xyd-js/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@xyd-js/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@yawlabs/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@yawlabs/mcp-compliance",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@yjzf/mcp-server-yjzf",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@yoda.digital/gitlab-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@yoryoboy/bi-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@z_ai/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@zapier/zapier-sdk-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@zencoderai/slack-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@zeplin/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@zereight/mcp-gitlab",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@zeroheight/mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@zhin.js/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@zilliz/claude-context-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@ziwansi/mcp-firewall",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "@zuplo/mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "accessflow-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "actual-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "add-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "aether-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "ag-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "agent-orchestrator-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "agentation-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "agenthub-multiagent-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "agentmail-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "ai-context-sync-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "airweave-mcp-search",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "al-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "alibabacloud-dataworks-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "alibabacloud-devops-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "anki-mcp-http",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "apisix-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "appium-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "appium-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "apple-doc-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "arduino-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "argocd-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "autotel-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "autotel-mcp-instrumentation",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "awesome-copilot-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "aws-s3-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "axe-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "axiom-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "backlog-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "bamboo-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "bc-code-intelligence-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "bc-telemetry-buddy-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "bitbucket-cloud-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "bitbucket-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "bitbucket-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "bmad-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "boondmanager-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "borgmcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "botrun-mcp-rust-pdf",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "bps-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "brilliant-directories-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "browser-devtools-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "bugsnag-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "camoufox-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "chrome-devtools-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "civi-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "clinicaltrialsgov-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "cls-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "coda-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "code-graph-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "code-review-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "codecov-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "codeloop-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "coderabbitai-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "codex-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "comfyui-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "confluence-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "converse-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "create-mcp-kit",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "create-mcp-use-app",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "create-xmcp-app",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "cursor-talk-to-figma-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "databricks-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "datadog-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "dataforseo-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "dataviz-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "davinci-resolve-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "deepl-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "deepseek-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "deepseek-thinker-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "dingtalk-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "discogs-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "discord-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "docusaurus-plugin-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "drawio-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "drupal-mcp-connector",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "duckduckgo-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "duckpond-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "efficient-gitlab-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "elysia-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "european-parliament-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "exa-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "excalidraw-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "expo-docs-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "expo-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "express-mcp-handler",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "fa-mcp-sdk",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "fastify-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "fastify-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "fastmcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "fdic-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "feishu-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "fetcher-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "figma-console-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "figma-context-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "figma-developer-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "figma-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "figura-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "fileditor-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "firecrawl-fastmcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "firecrawl-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "firehydrant-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "flightradar-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "flora-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "fluorite-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "foundryvtt-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "fractascan-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "frame0-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "freee-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "frontmcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "fsolar-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "functype-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "gangtise-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "gcp-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "ge-app-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "gemini-mcp-tool",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "gezhe-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "git-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "gitbook-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "github-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "gitlab-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "glove-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "godot-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "google-calendar-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "google-cloud-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "gorgias-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "graphlit-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "grayboard-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "gws-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "habitica-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "handoff-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "harness-mcp-v2",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "helios9-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "hevy-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "hlims-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "hono-mcp-server-sse-transport",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "hostinger-api-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "hourei-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "howtocook-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "hud-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "hvip-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "hyperbrowser-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "imap-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "influxdb-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "install-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "iobroker.mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "ios-simulator-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "islamic-content-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "jaeger-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "jira-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "jira-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "js-reverse-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "kapture-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "kibi-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "kolide-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "komodo-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "korean-law-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "kubernetes-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "kubernetes-mcp-server-darwin-arm64",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "kubernetes-mcp-server-linux-amd64",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "kubernetes-mcp-server-linux-arm64",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "kubernetes-mcp-server-windows-amd64",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "kusto-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "langchain-mcp-adapters",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "langsmith-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "libro-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "liepin-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "lighthouse-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "linear-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "linkup-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "local-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "loop-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "loopctl-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "lsp-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "lucid-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "magicpod-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "malicious-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-accessibility-scanner",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-aegis",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-atlassian",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-auth",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-bamboohr",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-bitbucket-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-client",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-client-capabilities",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-control",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-deepseek",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-deepwiki",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-desktop-automation",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-echo-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-evals",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-fetch-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-firebird",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-forge-cli",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-framework",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-from-openapi",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-gemini",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-graphql",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-graphql-schema",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-gsheets",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-gsuite",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-handler",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-hello-world",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-http-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-image",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-jira-stdio",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-jira-structure",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-keycloak-admin",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-linear",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-lite",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-local-rag",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-mermaid",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-mongo-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-obsidian",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-omnisearch",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-openapi-schema",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-parser",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-picnic",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-postgres",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-postgres-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-powerpoint",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-prometheus",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-proxy",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-registry-spec-sdk",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-remote",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-ripgrep",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-sanitizer",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-schema",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-scraper",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-searxng",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-apple-shortcuts",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-axiom",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-code-runner",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-commands",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-docker",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-fetch-typescript",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-giphy",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-google-workspace",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-gsc",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-kubernetes",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-linear",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-madeonsol",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-mysql",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-nationalparks",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-redmine",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-scf",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-slack",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-sqlite",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-sqlite-npx",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-ticktick",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-trello",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-weisheng-scrm",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-yandex-tracker",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-server-yandex-wiki",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-shell",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-sqlite",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-ssh",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-tanstack-start",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-test-client",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-trends-hub",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp-use",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcp.do",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcporter",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcps-logger",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mcpvals",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mediawiki-mcp-server-olioex",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "meta-ads-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "middy-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "momen-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mongodb-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mssql-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "multitravel-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "mysql-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "n8n-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "n8n-nodes-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "n8n-nodes-mcp-client",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "narrarium-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "ncloud-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "newrelic-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "newsnow-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "next-devtools-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "node-red-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "notebooklm-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "notebooklm-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "nuvex-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "nuxt-mcp-dev",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "nx-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "obsidian-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "obsidian-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "oclif-plugin-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "octocode-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "oioxo-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "ollama-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "ollama-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "omnifocus-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "open-meteo-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "openai-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "openapi-mcp-generator",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "openapi-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "outline-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "overmind-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "paput-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "perplexity-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "pg-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "pi-mcp-adapter",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "pi-mcp-extension",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "pipedrive-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "plantuml-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "playwright-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "playwright-mcp-advanced",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "playwright-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "playwright-stealth-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "pointsyeah-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "polaris-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "powerplatform-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "prometheus-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "prometheus-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "promptgraph-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "protakeoff-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "pulsemcp-cms-admin-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "puppeteer-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "questrade-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "ralph-hero-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "real-browser-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "reddit-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "replicate-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "resend-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "rhombus-node-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "rn-debug-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "roblox-mcp-pro",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "rosetta-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "run402-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "samarth-gtm-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "sbox-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "scratch-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "screenpipe-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "search-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "serper-search-scrape-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "shadcn-ui-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "siyuan-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "skillsmp-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "slack-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "slack-workspace-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "slite-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "smart-web-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "spy-wolf-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "square-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "ssh-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "ssh-mcp-pro",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "stitch-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "storybook-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "storybook-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "strapi-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "strapi-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "supabase-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "swagger-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "tabby-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "tailwindcss-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "tapd-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "targetprocess-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "tavily-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "tdesign-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "terminator-mcp-agent",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "terraform-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "testdino-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "tg2ai-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "tila-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "time-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "tiny-stdio-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "todoist-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "touchdesigner-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "tradingview-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "triliumnext-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "trpc-to-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "trvl-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "twelvelabs-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "u-space-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "ucu-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "ue-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "unichat-ts-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "unity-mcp-cli",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "vel-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "vercel-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "vite-plugin-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "vite-plugin-vue-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "wechat-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "wikipedia-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "wordpress-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "workday-studio-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "workers-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "wuying-agentbay-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "xcodebuildmcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "xiaohongshu-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "xmcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "yapi-auto-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "youtube-data-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "zd-mcp-server",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "zenarc-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "zion-mcp",
+   "ecosystem": "npm"
+  },
+  {
+   "name": "zubeid-youtube-mcp-server",
+   "ecosystem": "npm"
+  }
+ ]
+}

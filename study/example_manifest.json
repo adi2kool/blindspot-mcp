@@ -1,0 +1,13 @@
+{
+  "version": "x-mcp-provenance/prevalence-v0",
+  "_comment": "Self-test / demo manifest. Points only at this repo's own inert fixtures (Apache-2.0), so it runs at $0 with no third-party downloads. A real study adds real open-source servers here, one entry per server, with its license and install provenance. Run from the repo root: uv run blindspot prevalence study/example_manifest.json",
+  "servers": [
+    {"name": "vulnerable_server", "target": "fixtures/vulnerable_server.py", "transport": "stdio", "license": "Apache-2.0", "source": "repo:fixtures", "notes": "known-poisoned control (should FLAG)"},
+    {"name": "clean_server", "target": "fixtures/clean_server.py", "transport": "stdio", "license": "Apache-2.0", "source": "repo:fixtures", "notes": "known-clean control (should be clean)"},
+    {"name": "tagged_server", "target": "fixtures/tagged_server.py", "transport": "stdio", "license": "Apache-2.0", "source": "repo:fixtures", "notes": "conforming server that emits provenance"},
+    {"name": "compose_files_server", "target": "fixtures/compose_files_server.py", "transport": "stdio", "license": "Apache-2.0", "source": "repo:fixtures"},
+    {"name": "compose_web_server", "target": "fixtures/compose_web_server.py", "transport": "stdio", "license": "Apache-2.0", "source": "repo:fixtures"},
+    {"name": "compose_mailer_server", "target": "fixtures/compose_mailer_server.py", "transport": "stdio", "license": "Apache-2.0", "source": "repo:fixtures"},
+    {"name": "example_unvetted_server", "target": "fixtures/clean_server.py", "transport": "stdio", "license": "", "source": "repo:fixtures", "notes": "demonstrates the license gate: no license -> skipped until vetted"}
+  ]
+}

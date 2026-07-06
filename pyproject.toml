@@ -1,0 +1,74 @@
+[project]
+name = "blindspot"
+dynamic = ["version"]
+description = "An author-side trust-boundary layer for MCP: provenance tagging, a client enforcer, an enforcing proxy, a scanner on-ramp, and an adaptive-attack evaluation."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Aditya Choudhary" }]
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "prompt-injection",
+    "indirect-prompt-injection",
+    "provenance",
+    "trust-boundary",
+    "ai-security",
+    "llm-security",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "mcp>=1.28,<2",
+    "cryptography>=42",
+    # Imported directly at module scope, so declared explicitly rather than relying on
+    # mcp's transitive resolution: httpx (judge / inference / JWKS fetch), jsonschema
+    # (offline SARIF validation), pydantic (models + AnyUrl).
+    "httpx>=0.27,<1",
+    "jsonschema>=4.20",
+    "pydantic>=2",
+]
+
+[project.urls]
+Homepage = "https://github.com/adi2kool/blindspot-mcp"
+Repository = "https://github.com/adi2kool/blindspot-mcp"
+Issues = "https://github.com/adi2kool/blindspot-mcp/issues"
+
+[project.scripts]
+blindspot = "blindspot.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.24",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# Single-source the version from the package (no pyproject/__init__ desync on bumps).
+[tool.hatch.version]
+path = "src/blindspot/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/blindspot"]
+
+[tool.hatch.build.targets.sdist]
+# Keep the scratch client and study working dir out of the source distribution.
+exclude = ["study/.fs_sandbox"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

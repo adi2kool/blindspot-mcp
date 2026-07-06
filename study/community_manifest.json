@@ -1,0 +1,282 @@
+{
+  "version": "x-mcp-provenance/prevalence-v0",
+  "_comment": "Community sample (no-config subset of 45 verified OSS servers). Running this fetches+executes each package via npx/uvx. Licenses verified from repo/package metadata. Browser servers may download a runtime and could hit the per-server timeout (recorded failed, fail-safe). Run from repo root. The harness reads declared tools/prompts/resources only and never calls a tool.",
+  "servers": [
+    {
+      "name": "mcp-ripgrep",
+      "target": "mcollina/mcp-ripgrep",
+      "transport": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-ripgrep"
+      ],
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/mcp-ripgrep",
+      "notes": "Wraps ripgrep to expose fast regex code/text search (advanced-search, count-matches, list-"
+    },
+    {
+      "name": "mcp-server-commands",
+      "target": "g0t4/mcp-server-commands",
+      "transport": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-server-commands"
+      ],
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/mcp-server-commands",
+      "notes": "MCP server that runs arbitrary shell commands and scripts (run_command, run_script) with o"
+    },
+    {
+      "name": "code-index-mcp",
+      "target": "johnhuang316/code-index-mcp",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "code-index-mcp"
+      ],
+      "license": "MIT",
+      "source": "https://pypi.org/pypi/code-index-mcp/json",
+      "notes": "Indexes and searches a code repository (tree-sitter analysis, file/symbol search, auto-det"
+    },
+    {
+      "name": "cyanheads-git-mcp-server",
+      "target": "cyanheads/git-mcp-server",
+      "transport": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@cyanheads/git-mcp-server"
+      ],
+      "license": "Apache-2.0",
+      "source": "https://registry.npmjs.org/@cyanheads/git-mcp-server",
+      "notes": "Third-party Git version-control server (status, diff, commit, branch, tags, signing) using"
+    },
+    {
+      "name": "grep-mcp",
+      "target": "galprz/grep-mcp",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "grep-mcp"
+      ],
+      "license": "MIT",
+      "source": "https://pypi.org/pypi/grep-mcp/json",
+      "notes": "Searches a million public GitHub repos via the public grep.app API (regex, language/repo/p"
+    },
+    {
+      "name": "mcp-server-motherduck",
+      "target": "motherduckdb/mcp-server-motherduck",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "mcp-server-motherduck",
+        "--db-path",
+        ":memory:"
+      ],
+      "license": "MIT",
+      "source": "https://pypi.org/project/mcp-server-motherduck/",
+      "notes": "MotherDuck's official DuckDB/MotherDuck MCP server; runs against an in-memory DuckDB with "
+    },
+    {
+      "name": "mcp-server-duckdb",
+      "target": "ktanaka101/mcp-server-duckdb",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "mcp-server-duckdb",
+        "--db-path",
+        ":memory:"
+      ],
+      "license": "MIT",
+      "source": "https://pypi.org/project/mcp-server-duckdb/",
+      "notes": "Community DuckDB MCP server exposing query/table-create/schema tools; --db-path :memory: ("
+    },
+    {
+      "name": "playwright-mcp",
+      "target": "microsoft/playwright-mcp",
+      "transport": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp"
+      ],
+      "license": "Apache-2.0",
+      "source": "https://www.npmjs.com/package/@playwright/mcp",
+      "notes": "Microsoft's official Playwright MCP server: browser automation (navigate, click, type, sna"
+    },
+    {
+      "name": "executeautomation-playwright-mcp-server",
+      "target": "executeautomation/mcp-playwright",
+      "transport": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@executeautomation/playwright-mcp-server"
+      ],
+      "license": "MIT",
+      "source": "https://www.npmjs.com/package/@executeautomation/playwright-mcp-server",
+      "notes": "Playwright-based MCP server for browser + API automation (navigate, click, screenshot, JS "
+    },
+    {
+      "name": "puppeteer-real-browser-mcp-server",
+      "target": "eikaramba/puppeteer-real-browser-mcp-server",
+      "transport": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@eikaramba/puppeteer-real-browser-mcp-server"
+      ],
+      "license": "MIT",
+      "source": "https://www.npmjs.com/package/@eikaramba/puppeteer-real-browser-mcp-server",
+      "notes": "Detection-resistant Puppeteer MCP server that drives a local real Chrome for scraping/auto"
+    },
+    {
+      "name": "scrapling-fetch-mcp",
+      "target": "cyberchitta/scrapling-fetch-mcp",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "scrapling-fetch-mcp"
+      ],
+      "license": "Apache-2.0",
+      "source": "https://pypi.org/project/scrapling-fetch-mcp/",
+      "notes": "MCP server that fetches HTML/markdown from bot-protected sites using Scrapling (patchright"
+    },
+    {
+      "name": "fetchv2-mcp-server",
+      "target": "praveenc/fetchv2-mcp-server",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "fetchv2-mcp-server"
+      ],
+      "license": "MIT",
+      "source": "https://pypi.org/project/fetchv2-mcp-server/",
+      "notes": "Web-content MCP server using Trafilatura; exposes fetch, fetch_batch, discover_links, and "
+    },
+    {
+      "name": "duckduckgo-mcp-server",
+      "target": "nickclyde/duckduckgo-mcp-server",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "duckduckgo-mcp-server"
+      ],
+      "license": "MIT",
+      "source": "https://pypi.org/project/duckduckgo-mcp-server/",
+      "notes": "DuckDuckGo web search plus webpage content fetching/parsing; no API key required, defaults"
+    },
+    {
+      "name": "wikipedia-mcp",
+      "target": "Rudra-ravi/wikipedia-mcp",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "wikipedia-mcp"
+      ],
+      "license": "MIT",
+      "source": "https://pypi.org/project/wikipedia-mcp/",
+      "notes": "Wikipedia search, article/summary/section retrieval, links, coordinates and related topics"
+    },
+    {
+      "name": "arxiv-mcp-server",
+      "target": "blazickjp/arxiv-mcp-server",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "arxiv-mcp-server"
+      ],
+      "license": "Apache-2.0",
+      "source": "https://pypi.org/project/arxiv-mcp-server/",
+      "notes": "Search and analyze arXiv academic papers (metadata, search, download) via the public arXiv"
+    },
+    {
+      "name": "mcp-youtube-transcript",
+      "target": "jkawamoto/mcp-youtube-transcript",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "mcp-youtube-transcript"
+      ],
+      "license": "MIT",
+      "source": "https://pypi.org/project/mcp-youtube-transcript/",
+      "notes": "Retrieves transcripts of public YouTube videos with optional language selection; works wit"
+    },
+    {
+      "name": "mcp-hn",
+      "target": "erithwik/mcp-hn",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "mcp-hn"
+      ],
+      "license": "MIT",
+      "source": "https://github.com/erithwik/mcp-hn",
+      "notes": "Fetches Hacker News stories, comments, and user info via the public HN API; no API key req"
+    },
+    {
+      "name": "calculator-mcp",
+      "target": "wrtnlabs/calculator-mcp",
+      "transport": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@wrtnlabs/calculator-mcp"
+      ],
+      "license": "MIT",
+      "source": "https://github.com/wrtnlabs/calculator-mcp",
+      "notes": "Arithmetic/calculator MCP server (add, subtract, multiply, divide, etc.); zero dependencie"
+    },
+    {
+      "name": "chuk-mcp-open-meteo",
+      "target": "chrishayuk/chuk-mcp-open-meteo",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "chuk-mcp-open-meteo"
+      ],
+      "license": "Apache-2.0",
+      "source": "https://pypi.org/project/chuk-mcp-open-meteo/",
+      "notes": "Weather MCP server backed by the free Open-Meteo API (no API key); runs stdio by default v"
+    },
+    {
+      "name": "mcp-simple-timeserver",
+      "target": "andybrandt/mcp-simple-timeserver",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "mcp-simple-timeserver"
+      ],
+      "license": "MIT",
+      "source": "https://pypi.org/project/mcp-simple-timeserver/",
+      "notes": "Provides current local/NTP time (plus holiday/calendar helpers) to LLMs; console script mc"
+    },
+    {
+      "name": "pymupdf4llm-mcp",
+      "target": "pymupdf/pymupdf4llm-mcp",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "pymupdf4llm-mcp",
+        "stdio"
+      ],
+      "license": "AGPL-3.0",
+      "source": "https://github.com/pymupdf/pymupdf4llm-mcp",
+      "notes": "Official PyMuPDF/Artifex MCP server exposing pymupdf4llm PDF-to-Markdown extraction; conso"
+    },
+    {
+      "name": "mcp-pdf",
+      "target": "rsp2k/mcp-pdf",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "mcp-pdf"
+      ],
+      "license": "MIT",
+      "source": "https://pypi.org/project/mcp-pdf/",
+      "notes": "FastMCP PDF-processing server (text extraction, OCR, tables, forms, annotations) with libr"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://blindspot.dev/spec/x-mcp-provenance/v0/schema.json",
+  "title": "x-mcp-provenance/v0",
+  "description": "The provenance annotation object carried under the key 'x-mcp-provenance/v0' inside an MCP content item's _meta. See spec/convention.md sections 4 through 7. Consumers MUST ignore unknown fields and treat an unknown trust level as untrusted.",
+  "type": "object",
+  "required": ["origin", "trust"],
+  "properties": {
+    "origin": {
+      "description": "Where the content came from (convention section 4).",
+      "type": "string",
+      "enum": ["author", "user", "external", "derived"]
+    },
+    "trust": {
+      "description": "What the client enforces (convention section 4). An unknown value MUST be treated as untrusted.",
+      "type": "string",
+      "enum": ["trusted", "untrusted", "quarantined"]
+    },
+    "source": {
+      "description": "Informational only. MUST NOT contain secrets and MUST NOT be used by the client for any trust decision.",
+      "type": ["string", "null"]
+    },
+    "fenced": {
+      "description": "True if the content body uses span-level fencing per convention section 7.",
+      "type": "boolean",
+      "default": false
+    },
+    "integrity": {
+      "description": "Content integrity block (convention section 6). Required for trusted content, optional otherwise.",
+      "type": ["object", "null"],
+      "required": ["alg", "hash"],
+      "properties": {
+        "alg": {
+          "description": "Hash algorithm. Default sha-256.",
+          "type": "string",
+          "enum": ["sha-256"]
+        },
+        "hash": {
+          "description": "Base64 of the hash over the exact emitted content body, including any fence sentinels.",
+          "type": "string"
+        },
+        "signature": {
+          "description": "Optional authenticity signature tied to server identity. Null until a key distribution mechanism exists (out of scope for v0).",
+          "type": ["string", "null"]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

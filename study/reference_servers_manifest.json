@@ -1,0 +1,13 @@
+{
+  "version": "x-mcp-provenance/prevalence-v0",
+  "_comment": "Tier 1: the official MCP reference servers (github.com/modelcontextprotocol/servers). Running this fetches and executes each package via npx/uvx. Licenses verified from LICENSE/package metadata: git/fetch/time = MIT (Python, uvx); everything/filesystem/memory/sequential-thinking = Apache-2.0 (Node, npx). Run from the repo root so the filesystem sandbox path resolves. The harness reads declared prompts/resources only and never calls a tool.",
+  "servers": [
+    {"name": "everything", "target": "npm:@modelcontextprotocol/server-everything", "transport": "stdio", "command": "npx", "args": ["-y", "@modelcontextprotocol/server-everything"], "license": "Apache-2.0", "source": "npm:@modelcontextprotocol/server-everything"},
+    {"name": "filesystem", "target": "npm:@modelcontextprotocol/server-filesystem", "transport": "stdio", "command": "npx", "args": ["-y", "@modelcontextprotocol/server-filesystem", "study/.fs_sandbox"], "license": "Apache-2.0", "source": "npm:@modelcontextprotocol/server-filesystem", "notes": "pointed at an empty local sandbox dir"},
+    {"name": "memory", "target": "npm:@modelcontextprotocol/server-memory", "transport": "stdio", "command": "npx", "args": ["-y", "@modelcontextprotocol/server-memory"], "license": "Apache-2.0", "source": "npm:@modelcontextprotocol/server-memory"},
+    {"name": "sequential-thinking", "target": "npm:@modelcontextprotocol/server-sequential-thinking", "transport": "stdio", "command": "npx", "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"], "license": "Apache-2.0", "source": "npm:@modelcontextprotocol/server-sequential-thinking"},
+    {"name": "git", "target": "pypi:mcp-server-git", "transport": "stdio", "command": "uvx", "args": ["mcp-server-git"], "license": "MIT", "source": "pypi:mcp-server-git"},
+    {"name": "fetch", "target": "pypi:mcp-server-fetch", "transport": "stdio", "command": "uvx", "args": ["mcp-server-fetch"], "license": "MIT", "source": "pypi:mcp-server-fetch"},
+    {"name": "time", "target": "pypi:mcp-server-time", "transport": "stdio", "command": "uvx", "args": ["mcp-server-time"], "license": "MIT", "source": "pypi:mcp-server-time"}
+  ]
+}
