@@ -27,6 +27,7 @@ import contextlib
 import logging
 import re
 from dataclasses import dataclass, field
+from functools import lru_cache
 
 from mcp import ClientSession, types
 from mcp.server.lowlevel import Server
@@ -42,10 +43,19 @@ from airlock.compose import (
     classify_memory_tool,
     classify_server,
 )
+from airlock.enforce import dlp
 from airlock.enforce.broker import build_request, resolve_approval
 from airlock.enforce.infer import InferredProvenance, ProvenanceInferer
 from airlock.enforce.middleware import Enforcement, enforce
-from airlock.ledger import EV_DRIFT, EV_ELICITATION, EV_ENFORCE, EV_LOCK, EV_SAMPLING, Ledger
+from airlock.ledger import (
+    EV_DRIFT,
+    EV_EGRESS,
+    EV_ELICITATION,
+    EV_ENFORCE,
+    EV_LOCK,
+    EV_SAMPLING,
+    Ledger,
+)
 from airlock.models import Origin, Trust
 from airlock.provenance.tagger import tag_meta
 from airlock.scan.client import connect
@@ -85,6 +95,7 @@ class ProxyPolicy:
         drift_mode: str = "taint",
         sampling_mode: str = "frame",
         elicitation_mode: str = "frame",
+        egress_mode: str = "annotate",
     ) -> None:
         # assume_origin: when the upstream sends no provenance, tag its content at this
         # origin before enforcing (an operator vouching for a known server, at their
@@ -148,6 +159,18 @@ class ProxyPolicy:
         #   block: refuse the request (fail closed). No downstream LLM call, no credit spend.
         self.sampling_mode = sampling_mode
         self.elicitation_mode = elicitation_mode
+        # egress_mode: what to do when an OUTBOUND tool call to an exfil-capable tool carries
+        # a secret or high-confidence PII in its arguments (egress DLP). The action gate
+        # decides WHETHER a side-effecting call proceeds; this inspects WHAT sensitive data
+        # is inside the call the client is about to send out.
+        #   annotate: forward the call unchanged; record the finding to the ledger (default,
+        #             backward compatible - with no audit log this path is a no-op).
+        #   redact  : replace the detected secret/PII spans in a COPY of the arguments and
+        #             forward the redacted copy, so the call still works but the secret does
+        #             not leave.
+        #   block   : refuse the call outright; do NOT forward upstream (the secret never
+        #             leaves the boundary).
+        self.egress_mode = egress_mode
 
 
 @dataclass
@@ -410,6 +433,105 @@ def _is_side_effecting(name: str, description: str) -> bool:
     if any(sig.leg is TrifectaLeg.EXFIL for sig in classify_server(surface)):
         return True
     return bool(_DESTRUCTIVE_ACTION.search(_normalize(f"{name} {description or ''}")))
+
+
+@lru_cache(maxsize=2048)
+def _is_exfil_tool(name: str, description: str) -> bool:
+    """True if a tool can send data OUTWARD (the exfil leg of the trifecta): a send/post,
+    an outbound HTTP call, an upload/publish, a channel message. This is the precision gate
+    for egress DLP: a secret only *leaves* the boundary through an exfil-capable tool, so a
+    pure local read or a destructive-but-not-outbound tool is never scanned - which keeps
+    false positives off the calls that cannot exfiltrate anyway. Reuses the same composition
+    classifier the action gate uses, so 'can exfil' means exactly what the rest of the tool
+    means by it."""
+    surface = ServerSurface(name="_egress", tools=[ToolInfo(name, description or "")])
+    return any(sig.leg is TrifectaLeg.EXFIL for sig in classify_server(surface))
+
+
+def _egress_blocked_response(name: str, detectors: list[str]) -> types.CallToolResult:
+    """The result returned when an outbound call is refused under `--on-egress block`
+    because its arguments carry a secret / high-confidence PII. The call is NOT forwarded
+    upstream, so the sensitive data never leaves the boundary."""
+    kinds = ", ".join(detectors)
+    meta = {
+        ENFORCEMENT_NS: {
+            "egress_blocked": True,
+            "tool": name,
+            "detectors": list(detectors),
+            "reason": "sensitive-data-in-arguments",
+        }
+    }
+    msg = (
+        f"[airlock] BLOCKED: the outbound call to '{name}' carries sensitive data "
+        f"({kinds}) in its arguments. Per the egress policy (--on-egress block) the call "
+        "was NOT forwarded upstream, so the secret/PII did not leave the boundary. Re-issue "
+        "the call without the sensitive value once it has been vetted."
+    )
+    return types.CallToolResult(
+        content=[types.TextContent(type="text", text=msg, _meta=meta)], isError=True, _meta=meta
+    )
+
+
+def _apply_egress(
+    name: str,
+    arguments: dict,
+    description: str,
+    policy: ProxyPolicy,
+    ledger: Ledger | None,
+    tainted: bool,
+) -> tuple[dict, types.CallToolResult | None]:
+    """Scan an outbound tool call's arguments for secrets/PII and apply the egress policy.
+
+    Returns (arguments_to_forward, blocked_response). When blocked_response is not None the
+    caller must return it WITHOUT forwarding (block mode). Otherwise it forwards the returned
+    arguments (unchanged for annotate, a redacted copy for redact).
+
+    Fail-open: the whole scan is wrapped, so a scanner error degrades to forwarding the call
+    unchanged - a bug here must never break every outbound call. The one exception is a
+    redact that fails on a KNOWN finding: forwarding the raw secret would be worse than
+    refusing, so it fails closed to a block. Only EXFIL-classified tools are scanned; in
+    annotate mode with no audit log there is nothing to do, so the default hot path is a
+    no-op."""
+    try:
+        mode = policy.egress_mode
+        # Default hot path: annotate with no audit log has nothing to record and nothing to
+        # withhold, so short-circuit BEFORE the classifier - a call with the default policy
+        # pays only this compare (backward-compatible, zero added work).
+        if mode == "annotate" and ledger is None:
+            return arguments, None
+        if not _is_exfil_tool(name, description):
+            return arguments, None
+        findings = dlp.scan_args(arguments)
+        if not findings:
+            return arguments, None
+        detectors = sorted({f.detector for f in findings})
+        logger.warning(
+            "egress DLP: %d finding(s) [%s] in call to %s (mode=%s, session_tainted=%s)",
+            len(findings), ", ".join(detectors), name, mode, tainted,
+        )
+        # The ledger write is best-effort and MUST NOT alter the decision once a secret is
+        # known: a ledger error here must never fall through to the outer fail-open handler
+        # and forward the secret. Wrap it locally so block/redact stay fail-closed.
+        if ledger is not None:
+            try:
+                ledger.record_egress(
+                    name, mode, detectors, len(findings),
+                    redacted=(mode == "redact"), blocked=(mode == "block"), tainted=tainted,
+                )
+            except Exception:  # noqa: BLE001 - best-effort audit; never changes the decision
+                logger.debug("egress ledger write failed for %s", name, exc_info=True)
+        if mode == "block":
+            return arguments, _egress_blocked_response(name, detectors)
+        if mode == "redact":
+            try:
+                return dlp.redact_args(arguments, findings), None
+            except Exception:  # noqa: BLE001 - a redaction bug on a KNOWN secret fails CLOSED
+                logger.warning("egress redaction failed for %s; blocking instead of leaking", name)
+                return arguments, _egress_blocked_response(name, detectors)
+        return arguments, None  # annotate: forward unchanged, finding recorded
+    except Exception:  # noqa: BLE001 - fail-open: a scanner error must not break the call
+        logger.debug("egress DLP scan errored for %s; forwarding unchanged", name, exc_info=True)
+        return arguments, None
 
 
 def _gated_response(name: str, mode: str) -> types.CallToolResult:
@@ -982,6 +1104,16 @@ def make_proxy(
                                       disposition=Trust.UNTRUSTED.value,
                                       detail={"flags": ["untrusted_memory_write"],
                                               "enveloped": bool(wrapped)})
+                # Egress DLP: inspect the OUTBOUND arguments for secrets / high-confidence PII
+                # before they leave to an exfil-capable tool, then annotate / redact / block
+                # per policy. Runs on call_args (after any memory envelope) so a redaction
+                # covers the exact bytes that would be sent. In block mode it returns a refusal
+                # and the call is never forwarded, so the secret never leaves the boundary.
+                call_args, egress_blocked = _apply_egress(
+                    name, call_args, tool_descs.get(name, ""), policy, ledger, state.tainted
+                )
+                if egress_blocked is not None:
+                    return egress_blocked
                 result = await session.call_tool(name, call_args)
                 # A memory read is recorded under surface "memory" so the audit trail
                 # distinguishes what flowed out of persistent storage from ordinary tool

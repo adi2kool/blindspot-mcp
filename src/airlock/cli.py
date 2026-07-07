@@ -8,6 +8,7 @@
   airlock baseline TARGET [--http] --out PATH
   airlock drift    TARGET [--http] --baseline PATH
   airlock lock     TARGET [--http] --out PATH [--require-signature] [--keyid ID]
+  airlock report   LEDGER [--format human|json|html] [--out PATH] [--key PATH]
   airlock verify-log LEDGER [--key PATH] [--format human|json]
   airlock redteam  [--format human|json]
   airlock compose  TARGET [TARGET ...] [--http] [--format human|json]
@@ -17,6 +18,7 @@
   airlock proxy    TARGET [--http] [--assume-origin ...] [--infer] [--require-signature]
                             [--key PATH] [--key-alg hmac-sha256|ed25519] [--keystore PATH]
                             [--on-action annotate|approve|block]
+                            [--on-egress annotate|redact|block] [--explain]
                             [--audit-log PATH] [--audit-key PATH] [--lock PATH]
                             [--approval-webhook URL] [--approval-timeout SECONDS]
 
@@ -37,7 +39,9 @@ trifecta (private-data access plus untrusted content plus an exfiltration path);
 `prevalence` runs the Phase C study over a manifest of servers (local install,
 scan-only, license-gated) and reports how widespread injectable surface is;
 `proxy` runs an enforcing proxy that fronts a server and applies the client contract to
-everything it emits, so an unmodified client is protected end to end.
+everything it emits, so an unmodified client is protected end to end (add `--explain` for a
+live decision stream); `report` renders a proxy audit trail (the flight recorder) as a
+readable summary, JSON, or a self-contained HTML page.
 """
 
 from __future__ import annotations
@@ -312,6 +316,39 @@ def _cmd_verify_log(args: argparse.Namespace) -> int:
     return 0 if res.ok else 1
 
 
+def _cmd_report(args: argparse.Namespace) -> int:
+    from airlock.ledger_report import build_report, render_html, render_human, render_json
+
+    if not Path(args.ledger).exists():
+        print(f"error: ledger not found: {args.ledger}", file=sys.stderr)
+        return 2
+    key = None
+    if getattr(args, "key", None):
+        try:
+            key = Path(args.key).read_bytes()
+        except OSError as exc:
+            print(f"error: could not read key {args.key}: {exc}", file=sys.stderr)
+            return 2
+    rep = build_report(args.ledger, public_key=key)
+    if args.format == "json":
+        out = render_json(rep)
+    elif args.format == "html":
+        out = render_html(rep)
+    else:
+        out = render_human(rep)
+    if getattr(args, "out", None):
+        try:
+            Path(args.out).write_text(out, encoding="utf-8")
+        except OSError as exc:
+            print(f"error: could not write {args.out}: {exc}", file=sys.stderr)
+            return 2
+        print(f"wrote {args.format} report to {args.out}", file=sys.stderr)
+    else:
+        print(out)
+    # Non-zero exit on a broken chain, so `report` can gate CI like verify-log.
+    return 0 if rep.chain.ok else 1
+
+
 def _cmd_drift(args: argparse.Namespace) -> int:
     if _target_missing(args):
         print(f"error: target script not found: {args.target}", file=sys.stderr)
@@ -508,7 +545,21 @@ def _cmd_proxy(args: argparse.Namespace) -> int:
         drift_mode=drift_mode,
         sampling_mode=getattr(args, "on_sampling", "frame"),
         elicitation_mode=getattr(args, "on_elicitation", "frame"),
+        egress_mode=getattr(args, "on_egress", "annotate"),
     )
+    # --explain: stream every enforcement decision to stderr live. Zero core change - it
+    # just surfaces the airlock.proxy/enforce INFO logs the proxy already emits at each
+    # decision, formatted for a human. stdout stays pure MCP; the stream goes to stderr.
+    if getattr(args, "explain", False):
+        import logging
+
+        handler = logging.StreamHandler(sys.stderr)
+        handler.setFormatter(logging.Formatter("[airlock] %(message)s"))
+        for name in ("airlock.proxy", "airlock.enforce"):
+            lg = logging.getLogger(name)
+            lg.setLevel(logging.INFO)
+            lg.addHandler(handler)
+            lg.propagate = False
     # The proxy speaks MCP over stdio; nothing may print to stdout here. Status and
     # errors go to stderr only.
     print(f"airlock proxy: fronting {args.target} (stdio); enforcing the client contract",
@@ -713,6 +764,21 @@ def build_parser() -> argparse.ArgumentParser:
                       help="restrict verification to this keyid (repeatable)")
     lock.set_defaults(func=_cmd_lock)
 
+    report = sub.add_parser(
+        "report",
+        help="render a proxy audit trail (flight recorder) as a readable summary or HTML",
+    )
+    report.add_argument("ledger", help="path to the audit-trail JSONL file (from proxy --audit-log)")
+    report.add_argument(
+        "--format", choices=["human", "json", "html"], default="human",
+        help="output format: human (terminal summary + timeline), json, or html "
+        "(self-contained page for a screenshot / shared proof / compliance reviewer)",
+    )
+    report.add_argument("--out", metavar="PATH", help="write the report to PATH instead of stdout")
+    report.add_argument("--key", metavar="PATH",
+                        help="Ed25519 public key to verify entry signatures for the chain badge")
+    report.set_defaults(func=_cmd_report)
+
     verify_log = sub.add_parser(
         "verify-log", help="verify the hash chain (and signatures) of a proxy audit trail"
     )
@@ -875,6 +941,23 @@ def build_parser() -> argparse.ArgumentParser:
         help="how to handle a server-initiated elicitation request (a server-controlled "
         "prompt to the user): frame (enforce and relay a form elicitation, default) or "
         "block (decline). URL-mode elicitation is always declined (phishing vector).",
+    )
+    proxy.add_argument(
+        "--on-egress",
+        choices=["annotate", "redact", "block"],
+        default="annotate",
+        help="egress DLP: what to do when an OUTBOUND call to an exfil-capable tool carries "
+        "a secret or high-confidence PII (AWS/GitHub/Slack/Google token, private key, JWT, "
+        "Luhn-valid card, SSN) in its arguments: annotate (forward, record; default), redact "
+        "(replace the secret in the forwarded arguments) or block (refuse; the secret never "
+        "leaves). Only exfil-capable tools are scanned.",
+    )
+    proxy.add_argument(
+        "--explain",
+        action="store_true",
+        help="print a live, human-readable stream of every enforcement decision to stderr "
+        "(content demoted to data, side-effect calls gated, egress secrets redacted/blocked, "
+        "surface drift) as it happens - a proof-of-value view while the proxy runs",
     )
     proxy.add_argument(
         "--audit-log", metavar="PATH",

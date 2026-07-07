@@ -8,8 +8,26 @@ from __future__ import annotations
 
 import json
 
-from airlock.ledger import EV_ACTION, EV_ENFORCE, Ledger, verify_chain
+from airlock.ledger import EV_ACTION, EV_EGRESS, EV_ENFORCE, Ledger, verify_chain
 from airlock.provenance.integrity import generate_ed25519_keypair
+
+
+def test_record_egress_is_shape_only_and_chains(tmp_path):
+    """An egress-DLP entry carries detector names and counts but never the secret bytes,
+    and it chains like any other entry."""
+    path = tmp_path / "audit.jsonl"
+    led = Ledger(path)
+    secret = "AKIAIOSFODNN7EXAMPLE"
+    entry = led.record_egress(
+        "send_email", "block", ["aws_access_key"], 1, blocked=True, tainted=True
+    )
+    assert entry.event == EV_EGRESS
+    assert entry.detail["detectors"] == ["aws_access_key"]
+    assert entry.detail["blocked"] is True
+    assert entry.detail["session_tainted"] is True
+    # Shape-only: the secret must not appear anywhere in the persisted line.
+    assert secret not in path.read_text()
+    assert verify_chain(path).ok
 
 
 def test_append_builds_a_linked_chain(tmp_path):

@@ -46,6 +46,7 @@ EV_LOCK = "lock_violation"  # the upstream surface drifted from the trust lockfi
 EV_DRIFT = "surface_drift"  # the upstream surface drifted mid-session (live rug pull)
 EV_SAMPLING = "sampling"  # a server-initiated sampling request was enforced/gated
 EV_ELICITATION = "elicitation"  # a server-initiated elicitation request was enforced/gated
+EV_EGRESS = "egress_dlp"  # an outbound tool call carried a secret/PII in its arguments
 EV_APPROVAL_REQUEST = "approval_request"  # a gated action was sent for human approval
 EV_APPROVAL_DECISION = "approval_decision"  # a human/broker approved or denied it
 
@@ -237,6 +238,34 @@ class Ledger:
             surface="tool",
             ident=tool,
             detail={"mode": mode, "gated": bool(gated), "side_effecting": bool(side_effecting)},
+        )
+
+    def record_egress(
+        self,
+        tool: str,
+        mode: str,
+        detectors: list,
+        count: int,
+        redacted: bool = False,
+        blocked: bool = False,
+        tainted: bool = False,
+    ) -> LedgerEntry:
+        """Record an egress-DLP finding on an outbound tool call. SHAPE-ONLY: the detector
+        names and a count, never the secret bytes, so the audit trail attests that a secret
+        was seen leaving without persisting it. `tainted` records whether untrusted content
+        was already in the session (the confused-deputy exfil signal)."""
+        return self.append(
+            EV_EGRESS,
+            surface="tool",
+            ident=tool,
+            detail={
+                "mode": mode,
+                "detectors": list(detectors),
+                "count": int(count),
+                "redacted": bool(redacted),
+                "blocked": bool(blocked),
+                "session_tainted": bool(tainted),
+            },
         )
 
     def record_drift(self, category: str, changes: list, mode: str, upstream: str = "") -> LedgerEntry:

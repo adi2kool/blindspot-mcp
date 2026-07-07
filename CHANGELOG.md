@@ -4,6 +4,27 @@ Notable changes to Airlock. Each release is a git tag (`vX.Y.Z`); the portfolio 
 study's revision labels track these versions, so "what changed" reads the same in the repo
 and on the page.
 
+## [Unreleased]
+
+### Added
+- **Egress DLP** (`airlock proxy --on-egress annotate|redact|block`). The proxy now
+  inspects OUTBOUND tool-call arguments and stops a secret or high-confidence PII from
+  leaving through an exfil-capable tool. Deterministic, $0, fail-open detectors
+  (AWS/GitHub/Slack/Google tokens, PEM private keys, JWTs, Luhn-valid cards): `block`
+  refuses the call before it reaches upstream, `redact` strips the secret from the
+  forwarded arguments, `annotate` records only. A new `egress_dlp` ledger event records the
+  finding shape-only (detector names and counts, never the secret bytes). Detectors whose
+  shape collides with ordinary business data (SSN, email, phone) are opt-in, so a normal
+  recipient address or a `ddd-dd-dddd` product code is never flagged. Complements the action
+  gate: the gate decides *whether* a call proceeds, egress DLP decides *what* may leave in it.
+- **Observability.** `airlock report LEDGER [--format human|json|html] [--out PATH]` renders
+  the hash-chained flight recorder into a readable summary, machine JSON, or a self-contained
+  zero-dependency HTML timeline — what was demoted to data, how many side-effecting calls
+  were gated, how many secrets were stopped, and whether a server rug-pulled — with the
+  chain-integrity verdict shown and no secret values in the output (exits non-zero on a
+  broken chain, so it can gate CI). `airlock proxy --explain` streams every enforcement
+  decision to stderr live as it happens.
+
 ## [v0.2.1] — 2026-07-07 — Airlock: rename + PyPI/Docker distribution
 
 First release under the name **Airlock** (formerly Blindspot), and the first distributed on

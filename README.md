@@ -67,6 +67,15 @@ The enforcement surface has since been extended in three directions:
 - Provenance for MCP-exposed memory: `scan-memory` finds injection already persisted in a
   memory server, the proxy gates a poisoning memory WRITE once the session is tainted, and
   tags what is persisted so a later recall attributes it as untrusted-origin.
+- Egress DLP: the proxy inspects OUTBOUND tool-call arguments and stops a secret or
+  high-confidence PII (AWS/GitHub/Slack/Google token, private key, JWT, Luhn-valid card)
+  from leaving through an exfil-capable tool - `--on-egress block` refuses the call and
+  `redact` strips the secret from the forwarded arguments. It complements the action gate:
+  the gate decides *whether* a call proceeds, egress DLP decides *what* may leave in it.
+- Observability: `airlock report` turns the hash-chained flight recorder into a readable
+  summary or a self-contained HTML timeline (what was framed, gated, and stopped, with the
+  chain shown intact and no secret values), and `airlock proxy --explain` streams every
+  enforcement decision live.
 
 Runs at $0. The only optional network dependency is a local open-source model for
 the semantic judge; without one, the scanner degrades to local-only detection.
@@ -136,6 +145,14 @@ uv run airlock proxy fixtures/vulnerable_server.py --infer
 # (forward, record the disposition), which is backward compatible.
 uv run airlock proxy fixtures/vulnerable_server.py --on-action block
 
+# Egress DLP: stop a SECRET from leaving in an outbound tool call. Where the action gate
+# decides WHETHER a side-effecting call proceeds, egress DLP inspects WHAT is inside its
+# arguments and, for an exfil-capable tool, blocks (or redacts) a call carrying an
+# AWS/GitHub/Slack/Google token, a private key, a JWT, or a Luhn-valid card. Only
+# high-confidence detectors run by default, so a normal recipient address is never flagged.
+uv run airlock proxy fixtures/egress_server.py --on-egress block --audit-log audit.jsonl
+uv run airlock proxy fixtures/egress_server.py --on-egress redact   # strip, don't refuse
+
 # Enforce the REVERSE (server->client) channels too. A server can push text into the
 # client's own LLM via sampling (createMessage) or a coercive prompt to the user via
 # elicitation. The proxy frames that server-supplied text as data, never leaves a server
@@ -176,6 +193,17 @@ uv run airlock proxy fixtures/tagged_server.py --pin-on-start --on-drift taint
 uv run airlock proxy fixtures/vulnerable_server.py --audit-log audit.jsonl \
                        --audit-key server.key --audit-keyid op-1
 uv run airlock verify-log audit.jsonl --key server.pub
+
+# Render the flight recorder as a readable REPORT: a terminal summary + timeline, or a
+# self-contained HTML page you can screenshot or hand to a reviewer (how much untrusted
+# content was demoted, how many side-effecting calls were gated, how many secrets were
+# stopped, and whether a server rug-pulled). The chain-integrity verdict is shown; the
+# report never contains secret values. Exits non-zero on a broken chain (so it gates CI).
+uv run airlock report audit.jsonl
+uv run airlock report audit.jsonl --format html --out report.html
+
+# Or watch every enforcement decision live as the proxy runs (a proof-of-value stream).
+uv run airlock proxy fixtures/vulnerable_server.py --on-action block --explain
 
 # Trust lockfile: pin a server's surface, then run the proxy with --lock. If the server
 # has drifted from the pin (a rug pull), the proxy refuses to start.
