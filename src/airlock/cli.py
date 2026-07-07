@@ -297,8 +297,19 @@ def _cmd_lock(args: argparse.Namespace) -> int:
 
 
 def _cmd_verify_log(args: argparse.Namespace) -> int:
-    from airlock.ledger import verify_chain
+    from airlock.ledger import ledger_tip, verify_chain
 
+    # --print-tip: emit the current (count, tip-hash) so an operator can anchor it out-of-band
+    # and later detect truncation of the most recent entries with --expect-count/--expect-tip.
+    if getattr(args, "print_tip", False):
+        tip = ledger_tip(args.ledger)
+        if tip is None:
+            print(f"error: cannot read a tip from {args.ledger}", file=sys.stderr)
+            return 2
+        count, tip_hash = tip
+        print(json.dumps({"entries": count, "tip": tip_hash}) if args.format == "json"
+              else f"{count} {tip_hash}")
+        return 0
     key = None
     if args.key:
         try:
@@ -306,7 +317,11 @@ def _cmd_verify_log(args: argparse.Namespace) -> int:
         except OSError as exc:
             print(f"error: could not read key {args.key}: {exc}", file=sys.stderr)
             return 2
-    res = verify_chain(args.ledger, public_key=key)
+    res = verify_chain(
+        args.ledger, public_key=key,
+        expected_entries=getattr(args, "expect_count", None),
+        expected_tip=getattr(args, "expect_tip", None),
+    )
     if args.format == "json":
         print(json.dumps({
             "ok": res.ok, "entries": res.entries, "signed": res.signed,
@@ -385,12 +400,24 @@ def _cmd_init(args: argparse.Namespace) -> int:
     from airlock import onboard
 
     clients = onboard.CLIENTS if args.client == "all" else (args.client,)
-    found = onboard.discover(
-        clients, Path.home(), sys.platform, Path.cwd(), os.environ.get("APPDATA")
-    )
+    # Explicit --config paths are a deliberate opt-in for project-local configs (which are
+    # never auto-discovered, so a cloned repo can't get its checked-in servers wrapped/launched
+    # just by running init in it). When given, they REPLACE auto-discovery.
+    if args.config:
+        found = []
+        for raw in args.config:
+            p = Path(raw).expanduser()
+            if p.is_file():
+                found.append(("custom", p))
+            else:
+                print(f"! --config {raw}: not a file; skipping", file=sys.stderr)
+    else:
+        found = onboard.discover(
+            clients, Path.home(), sys.platform, Path.cwd(), os.environ.get("APPDATA")
+        )
     if not found:
-        print("no MCP client config found (looked for Claude Desktop / Cursor / Claude Code).",
-              file=sys.stderr)
+        print("no MCP client config found (looked for Claude Desktop / Cursor / Claude Code; "
+              "pass --config PATH for a project-local config).", file=sys.stderr)
         return 1
 
     launcher = shlex.split(args.launcher) if args.launcher else ["airlock"]
@@ -417,9 +444,12 @@ def _cmd_init(args: argparse.Namespace) -> int:
             print("  (no mcpServers; nothing to do)")
             continue
 
-        # Phase 1: pin each wrappable stdio server (best-effort, real run only).
+        # Phase 1: pin each wrappable stdio server by launching it once (best-effort, real run
+        # only). This EXECUTES the upstream, so it is opt-in (--pin): the default path never runs
+        # an unvetted server and relies on the baked --pin-on-start instead (pin on first proxied
+        # start, behind the trust boundary).
         locks: dict[str, Path] = {}
-        if not args.no_lock and not args.dry_run:
+        if args.pin and not args.no_lock and not args.dry_run:
             for name, spec in servers.items():
                 if onboard.is_wrapped(spec, launcher):
                     continue
@@ -445,6 +475,10 @@ def _cmd_init(args: argparse.Namespace) -> int:
                 f += ["--taint-context", str(ctx_dir)]
             if name in locks:
                 f += ["--lock", str(locks[name])]
+            elif not args.no_lock:
+                # Not eagerly pinned (the default): pin on first PROXIED start instead, so the
+                # rug-pull defense still applies without init ever executing the upstream.
+                f += ["--pin-on-start"]
             return f
 
         plans = onboard.plan_servers(servers, launcher, flags_for)
@@ -669,6 +703,18 @@ def _cmd_proxy(args: argparse.Namespace) -> int:
     drift_mode = getattr(args, "on_drift", None)
     if drift_mode is None:
         drift_mode = "block" if lock is not None else "taint"
+    # --dlp-optional: enable opt-in egress detectors (us_ssn / email / phone) by name.
+    egress_optional: tuple[str, ...] = ()
+    if getattr(args, "dlp_optional", None):
+        from airlock.enforce.dlp import OPTIONAL_DETECTORS
+
+        requested = [n.strip() for n in args.dlp_optional.split(",") if n.strip()]
+        unknown = [n for n in requested if n not in OPTIONAL_DETECTORS]
+        if unknown:
+            print(f"error: unknown --dlp-optional detector(s): {', '.join(unknown)}. "
+                  f"Choose from: {', '.join(sorted(OPTIONAL_DETECTORS))}.", file=sys.stderr)
+            return 2
+        egress_optional = tuple(requested)
     policy = ProxyPolicy(
         assume_origin=Origin(args.assume_origin) if args.assume_origin else None,
         verify_key=key,
@@ -689,6 +735,7 @@ def _cmd_proxy(args: argparse.Namespace) -> int:
         sampling_mode=getattr(args, "on_sampling", "frame"),
         elicitation_mode=getattr(args, "on_elicitation", "frame"),
         egress_mode=getattr(args, "on_egress", "annotate"),
+        egress_optional=egress_optional,
         taint_context=getattr(args, "taint_context", None),
         taint_ttl=getattr(args, "taint_ttl", 3600.0),
     )
@@ -818,7 +865,10 @@ def _cmd_prevalence_source(args: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
+    from airlock import __version__
+
     parser = argparse.ArgumentParser(prog="airlock", description="MCP trust-boundary tooling")
+    parser.add_argument("--version", action="version", version=f"airlock {__version__}")
     sub = parser.add_subparsers(dest="command", required=True)
 
     scan = sub.add_parser("scan", help="scan an MCP server's prompts and resources")
@@ -921,6 +971,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="which client's config to wrap (default: all detected)",
     )
     init.add_argument(
+        "--config", metavar="PATH", action="append", default=None,
+        help="wrap an explicit config file (repeatable). Use this for a PROJECT-LOCAL config "
+        "(e.g. ./.mcp.json): those are never auto-discovered, since running init inside an "
+        "untrusted repo must not pick up its checked-in servers.",
+    )
+    init.add_argument(
         "--launcher", metavar="CMD", default=None,
         help="how the rewritten config invokes airlock (default: 'airlock'; e.g. "
         "'uvx airlock-mcp' or 'python -m airlock.cli')",
@@ -929,8 +985,13 @@ def build_parser() -> argparse.ArgumentParser:
                       help="bake this action-gate mode into every wrapped server (default: annotate)")
     init.add_argument("--on-egress", choices=["annotate", "redact", "block"], default=None,
                       help="bake this egress-DLP mode into every wrapped server (default: annotate)")
+    init.add_argument("--pin", action="store_true",
+                      help="eagerly LAUNCH each server once during init to pin its surface into a "
+                      "lockfile. Off by default: init otherwise never executes an upstream and "
+                      "instead bakes --pin-on-start, so each server is pinned on its first proxied "
+                      "run. Only use --pin for configs whose servers you already trust to launch.")
     init.add_argument("--no-lock", action="store_true",
-                      help="do not launch each server to pin its surface into a lockfile")
+                      help="bake no rug-pull protection at all (no --pin-on-start, no lockfile)")
     init.add_argument("--no-shared-taint", action="store_true",
                       help="do not give this client's servers a shared cross-server taint context "
                       "(each proxy then gates only on its own server's untrusted content)")
@@ -964,6 +1025,15 @@ def build_parser() -> argparse.ArgumentParser:
     )
     verify_log.add_argument("ledger", help="path to the audit-trail JSONL file")
     verify_log.add_argument("--key", metavar="PATH", help="Ed25519 public key to verify entry signatures")
+    verify_log.add_argument("--print-tip", action="store_true",
+                            help="print the current tip as '<count> <hash>' and exit, to anchor "
+                            "out-of-band (then --expect-count/--expect-tip detects truncation)")
+    verify_log.add_argument("--expect-count", type=int, default=None, metavar="N",
+                            help="fail if the log has fewer than N entries (detects truncation of "
+                            "the most recent entries, which a bare hash chain cannot)")
+    verify_log.add_argument("--expect-tip", metavar="HASH", default=None,
+                            help="fail if the log's tip entry-hash differs from HASH (a previously "
+                            "anchored tip); catches truncation/divergence of recent entries")
     verify_log.add_argument("--format", choices=["human", "json"], default="human",
                             help="output format (default: human)")
     verify_log.set_defaults(func=_cmd_verify_log)
@@ -1133,6 +1203,12 @@ def build_parser() -> argparse.ArgumentParser:
         "Luhn-valid card, SSN) in its arguments: annotate (forward, record; default), redact "
         "(replace the secret in the forwarded arguments) or block (refuse; the secret never "
         "leaves). Only exfil-capable tools are scanned.",
+    )
+    proxy.add_argument(
+        "--dlp-optional", metavar="NAMES", default=None,
+        help="also enable these opt-in egress detectors (comma-separated: us_ssn, email, "
+        "phone). Off by default because their shape collides with benign business data (an "
+        "email is legitimate in a send_email arg); enable only where outbound args carry them.",
     )
     proxy.add_argument(
         "--explain",

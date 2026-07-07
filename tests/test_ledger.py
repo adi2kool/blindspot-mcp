@@ -71,6 +71,46 @@ def test_verify_detects_deleted_entry(tmp_path):
     assert not res.ok  # sequence gap or broken chain
 
 
+def test_tail_truncation_undetected_without_anchor_but_caught_with_one(tmp_path):
+    """A bare hash chain accepts any valid prefix, so dropping the newest entries verifies
+    clean. An anchored tip (ledger_tip) detects it. Regression for the ledger audit."""
+    from airlock.ledger import ledger_tip
+
+    path = tmp_path / "audit.jsonl"
+    led = Ledger(path)
+    for i in range(4):
+        led.append(EV_ACTION, ident=f"act-{i}", detail={"gated": True})
+    count, tip = ledger_tip(path)
+    assert count == 4 and len(tip) == 64
+    assert verify_chain(path).ok  # intact
+
+    # Attacker (no signing key) drops the last two entries — the records of their own actions.
+    lines = path.read_text().splitlines()
+    path.write_text("\n".join(lines[:2]) + "\n")
+
+    assert verify_chain(path).ok  # the surviving prefix still verifies (the documented limit)
+    anchored = verify_chain(path, expected_entries=count, expected_tip=tip)
+    assert not anchored.ok
+    assert "truncated" in anchored.reason
+    # Tip mismatch alone is also caught.
+    assert not verify_chain(path, expected_tip=tip).ok
+
+
+def test_ledger_tip_reads_last_entry(tmp_path):
+    from airlock.ledger import ledger_tip
+
+    path = tmp_path / "a.jsonl"
+    assert ledger_tip(path) is None  # missing file
+    led = Ledger(path)
+    led.append(EV_ENFORCE, ident="a")
+    led.append(EV_ENFORCE, ident="b")
+    count, tip = ledger_tip(path)
+    assert count == 2
+    # The tip is the last entry's hash.
+    last = json.loads(path.read_text().splitlines()[-1])
+    assert tip == last["entry_hash"]
+
+
 def test_signed_entries_verify_with_public_key(tmp_path):
     priv, pub = generate_ed25519_keypair()
     path = tmp_path / "audit.jsonl"

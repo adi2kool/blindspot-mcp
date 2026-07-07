@@ -79,8 +79,12 @@ The enforcement surface has since been extended in several directions:
 - Onboarding: `airlock init` detects your MCP client config (Claude Desktop / Cursor /
   Claude Code) and wraps every server behind the proxy in one command - stdio servers via
   `airlock proxy --exec <cmd>`, remote servers via `--http` - backing up the original and
-  best-effort pinning each surface into a lockfile. `--exec` lets the proxy front any
-  command (npx / uvx / node / a binary), not just a python script.
+  baking `--pin-on-start` so each surface is pinned on its first proxied run (rug-pull
+  defense) without init ever launching a server itself. `--pin` opts into eagerly launching
+  each server to pre-pin; a project-local config is wrapped only when named with `--config
+  PATH` (never auto-discovered, so running init in an untrusted repo can't wrap its servers).
+  `--exec` lets the proxy front any command (npx / uvx / node / a binary), not just a python
+  script.
 - Cross-server enforcement: the lethal trifecta is emergent ACROSS servers, so `init` gives a
   client's servers a shared taint context (`airlock proxy --taint-context`). Untrusted content
   read via one server gates a side-effecting call to a DIFFERENT server at runtime - turning
@@ -139,10 +143,12 @@ uv run airlock guard fixtures/tagged_server.py
 
 # ONE-COMMAND ONBOARDING: detect your MCP client config (Claude Desktop / Cursor /
 # Claude Code) and wrap every server behind the proxy - stdio via --exec, remote via
-# --http - backing up the original and pinning each surface into a lockfile. --dry-run
-# shows the plan without writing. Restart the client, then `airlock report` to see it work.
+# --http - backing up the original and baking --pin-on-start (pinned on first proxied run).
+# init never launches a server itself unless you pass --pin. --dry-run shows the plan without
+# writing. Restart the client, then `airlock report` to see it work.
 uv run airlock init --dry-run
 uv run airlock init --on-egress block          # apply, and block secrets from leaving
+uv run airlock init --config ./.mcp.json       # wrap an explicit project-local config (opt-in)
 
 # Front an ARBITRARY command (npx / uvx / node / binary) as the upstream, not just a
 # python script. This is what init writes into your config for each server.

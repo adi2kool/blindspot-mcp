@@ -10,20 +10,35 @@ super-linear) is the point, not the absolute constants. Reproduce with the harne
 
 ## Enforcement hot path
 
-`enforce()` on an untagged body (the common proxy case: demote to a framed data block)
-is dominated by a single sanitizer pass and a hash, and is effectively free:
+`enforce()` on an untagged body (the common proxy case: demote to a framed data block) is
+dominated by the invisible-unicode sanitizer pass plus a hash. Its cost has **two regimes**,
+because the sanitizer takes an ASCII fast path (`str.isascii()` short-circuit) and only walks
+the string character-by-character when it contains non-ASCII code points:
 
-| body size | latency | throughput |
-| --------- | ------- | ---------- |
-| 1 KB      | ~1.8 µs | ~0.6 GB/s  |
-| 10 KB     | ~4.8 µs | ~2.1 GB/s  |
-| 100 KB    | ~40 µs  | ~2.6 GB/s  |
+| body size | ASCII body (common) | non-ASCII body (worst case) |
+| --------- | ------------------- | --------------------------- |
+| 1 KB      | ~1.9 µs             | ~0.28 ms                    |
+| 10 KB     | ~5.5 µs             | ~3.1 ms                     |
+| 100 KB    | ~33 µs              | ~29 ms                      |
 
-The signed/verify path (trusted content with an HMAC signature, which re-sanitizes and
-re-hashes) is heavier but cleanly linear — ~0.37 ms / ~3.5 ms / ~37 ms at 1 / 10 / 100 KB
-(a clean 10× per 10× of input). The higher constant is the per-character invisible-unicode
-sanitizer, an existing cost, not new. Signing/verification is only engaged when a key is
-configured.
+Both regimes are **cleanly linear** in body size (10× the input ≈ 10× the time). Pure-ASCII
+content — English, JSON, code, base64 — is effectively free (~sub-µs/KB): the fast path
+returns the body untouched, since no code point below U+0080 is ever an invisible/format/tag
+character. Content with any non-ASCII byte pays the full per-character scan (~270 µs/KB) that
+strips every Cf/Cs/variation-selector/tag character and decodes tag-smuggled ASCII. That
+scan runs synchronously, and the proxy caps a single enforced item at `_MAX_ENFORCE_CHARS`
+(1 MB), so a worst-case 1 MB non-ASCII item is ~0.3 s of CPU; multiple content blocks in one
+response are additive. Memory is ~1× the input on the ASCII path and up to ~9× on the
+non-ASCII path (the sanitizer accumulates surviving characters before `"".join`).
+
+The signed/verify path (trusted content with a signature, which re-sanitizes and re-hashes)
+carries the same sanitizer regime plus the signature check, and is only engaged when a key
+is configured.
+
+> Earlier revisions of this file quoted ~1.8 µs / ~0.6 GB/s for the 1 KB row as the single
+> hot-path number. That figure only ever held for ASCII bodies; it silently omitted the
+> ~270 µs/KB non-ASCII regime. The ASCII fast path (added after that measurement) is what now
+> makes the small ASCII numbers real, but the non-ASCII column is the honest upper bound.
 
 ## Linear-time guarantees (ReDoS)
 

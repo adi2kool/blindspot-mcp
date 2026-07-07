@@ -16,9 +16,29 @@ def test_candidate_configs_per_platform():
     assert lin["claude-desktop"][0] == home / ".config" / "Claude" / "claude_desktop_config.json"
     win = onboard.candidate_configs(home, "win32", cwd, appdata="C:/Users/u/AppData/Roaming")
     assert win["claude-desktop"][0] == Path("C:/Users/u/AppData/Roaming") / "Claude" / "claude_desktop_config.json"
-    # Cursor + Claude Code look in home and cwd.
+    # Cursor + Claude Code look in the USER home dir only.
     assert home / ".cursor" / "mcp.json" in mac["cursor"]
-    assert cwd / ".mcp.json" in mac["claude-code"]
+    assert home / ".claude.json" in mac["claude-code"]
+    # SECURITY: project-local (cwd) configs are NOT auto-discovered — running init inside an
+    # untrusted repo must not pick up its checked-in servers (they can be launched to pin).
+    all_paths = [p for paths in mac.values() for p in paths]
+    assert cwd / ".mcp.json" not in all_paths
+    assert cwd / ".cursor" / "mcp.json" not in all_paths
+
+
+def test_is_wrapped_recognizes_runner_fronted_wraps():
+    """Idempotency must survive a launcher change: a wrap made via `uvx airlock-mcp` or
+    `python -m airlock.cli` is recognized by a later default-launcher init, so it is never
+    double-wrapped. Regression for the rigor audit."""
+    default = ["airlock"]
+    assert onboard.is_wrapped({"command": "uvx", "args": ["airlock-mcp", "proxy", "--exec", "npx"]}, default)
+    assert onboard.is_wrapped({"command": "python", "args": ["-m", "airlock.cli", "proxy", "x"]}, default)
+    assert onboard.is_wrapped({"command": "airlock", "args": ["proxy", "--exec", "npx"]}, default)
+    # A genuinely-unwrapped server is still not mistaken for wrapped.
+    assert not onboard.is_wrapped({"command": "npx", "args": ["-y", "server"]}, default)
+    # `proxy` must be a leading subcommand, not just any arg (a server literally named to
+    # contain 'proxy' in a flag value must not be treated as wrapped).
+    assert not onboard.is_wrapped({"command": "npx", "args": ["-y", "cool-proxy-server"]}, default)
 
 
 def test_read_servers_tolerates_absent_or_malformed():

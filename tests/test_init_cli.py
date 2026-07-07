@@ -115,3 +115,49 @@ def test_init_no_config_found_returns_1(monkeypatch, capsys):
     monkeypatch.setattr(onboard, "discover", lambda *a, **k: [])
     assert cli.main(["init"]) == 1
     assert "no MCP client config" in capsys.readouterr().err
+
+
+def test_init_default_never_launches_upstream_but_bakes_pin_on_start(cfg, tmp_path, monkeypatch):
+    """SECURITY regression: default init must NOT execute any upstream (launching an unvetted
+    server was a confused-deputy RCE). Rug-pull defense is deferred to --pin-on-start on the
+    first PROXIED run instead."""
+    launched = []
+    monkeypatch.setattr(cli, "_pin_upstream", lambda *a, **k: launched.append(a) or True)
+    rc = cli.main(["init", "--no-audit", "--no-shared-taint", "--lock-dir", str(tmp_path / "locks")])
+    assert rc == 0
+    assert launched == []  # nothing was executed
+    files = json.loads(cfg.read_text())["mcpServers"]["files"]["args"]
+    assert "--pin-on-start" in files and "--lock" not in files
+
+
+def test_init_pin_flag_opts_into_eager_launch(cfg, tmp_path, monkeypatch):
+    """--pin restores the eager launch-to-pin, for configs whose servers are already trusted."""
+    launched = []
+
+    def fake_pin(command, cargs, lockpath):
+        launched.append(command)
+        lockpath.parent.mkdir(parents=True, exist_ok=True)
+        lockpath.write_text("{}")
+        return True
+
+    monkeypatch.setattr(cli, "_pin_upstream", fake_pin)
+    rc = cli.main(["init", "--pin", "--no-audit", "--no-shared-taint", "--lock-dir", str(tmp_path / "locks")])
+    assert rc == 0
+    assert "npx" in launched  # the stdio server WAS launched to pin, on explicit opt-in
+    files = json.loads(cfg.read_text())["mcpServers"]["files"]["args"]
+    assert "--lock" in files  # eagerly pinned -> --lock baked instead of --pin-on-start
+
+
+def test_init_config_flag_targets_explicit_file_and_skips_discovery(tmp_path, monkeypatch):
+    """A project-local config is wrapped ONLY when named with --config; auto-discovery (which
+    excludes the cwd) is not consulted at all."""
+    def _boom(*a, **k):
+        raise AssertionError("discovery must not run when --config is given")
+
+    monkeypatch.setattr(onboard, "discover", _boom)
+    proj = tmp_path / ".mcp.json"
+    proj.write_text(json.dumps({"mcpServers": {"x": {"command": "npx", "args": ["s"]}}}))
+    rc = cli.main(["init", "--config", str(proj), "--no-lock", "--no-audit", "--no-shared-taint"])
+    assert rc == 0
+    x = json.loads(proj.read_text())["mcpServers"]["x"]
+    assert x["command"] == "airlock" and "--exec" in x["args"]

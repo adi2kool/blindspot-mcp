@@ -2,10 +2,19 @@
 
 Every enforcement decision and every action-gate/approval decision the proxy makes is
 recorded as one entry in a hash-chained log. Each entry's `entry_hash` covers the
-previous entry's hash, so editing or deleting any past entry breaks the chain from that
-point forward and `verify_chain` detects it. Entries MAY additionally be Ed25519-signed
-by the operator, so a verifier with the operator's public key can confirm the log was
-produced by the holder of the key and not forged wholesale.
+previous entry's hash, so editing, reordering, inserting, or deleting any INTERIOR entry
+breaks the chain from that point forward and `verify_chain` detects it. Entries MAY
+additionally be Ed25519-signed by the operator, so a verifier with the operator's public
+key can confirm the log was produced by the holder of the key and not forged wholesale.
+
+One property a bare hash chain does NOT give you: detecting truncation of the most RECENT
+entries. Any valid prefix of a valid chain is itself a valid chain, so an attacker who can
+write the file (but does not hold the signing key) can drop trailing entries - e.g. the
+records of their own actions - and the remainder still verifies. This is fundamental to
+append-only logs and cannot be closed from the file alone; it needs an out-of-band anchor.
+`verify_chain` therefore accepts an optional `expected_entries` / `expected_tip` the operator
+persists elsewhere (see `ledger_tip`), and flags a short/diverged log as truncated. Without an
+anchor, treat "chain intact" as "no interior entry was altered", not "nothing was removed".
 
 This is the free, local primitive: a JSONL file on disk, no network, no service. The
 `Ledger` write path and the `verify_chain` read path are the stable seam; a hosted,
@@ -351,13 +360,55 @@ class ChainResult:
     first_broken_seq: int | None = None
 
 
-def verify_chain(path: str | Path, public_key: bytes | None = None) -> ChainResult:
+def ledger_tip(path: str | Path) -> tuple[int, str] | None:
+    """The current tip of a ledger as (entry_count, tip_entry_hash), or None if empty/unreadable.
+
+    An operator (or the future control plane) persists this out-of-band so a later
+    `verify_chain(..., expected_entries=N, expected_tip=H)` can detect truncation of the most
+    recent entries - which a bare hash chain cannot. Reads only the last non-blank line."""
+    tip_hash = ""
+    count = 0
+    try:
+        with Path(path).open("r", encoding="utf-8") as fh:
+            for raw in fh:
+                line = raw.strip()
+                if not line:
+                    continue
+                try:
+                    obj = json.loads(line)
+                    h = obj.get("entry_hash")
+                except ValueError:
+                    return None
+                if not isinstance(h, str) or not h:
+                    return None
+                tip_hash = h
+                count += 1
+    except OSError:
+        return None
+    if count == 0:
+        return None
+    return count, tip_hash
+
+
+def verify_chain(
+    path: str | Path,
+    public_key: bytes | None = None,
+    *,
+    expected_entries: int | None = None,
+    expected_tip: str | None = None,
+) -> ChainResult:
     """Verify the hash chain (and signatures, if a public key is given).
 
     Checks that sequence numbers increment from 0, that each entry links to the prior
     one, that each recomputed `entry_hash` matches, and - when `public_key` is provided -
     that every signed entry verifies. Returns a result rather than raising, so a caller
-    fails closed on a broken or unreadable log."""
+    fails closed on a broken or unreadable log.
+
+    Truncation anchor (optional): a bare chain accepts any valid prefix, so dropping the newest
+    entries is otherwise undetectable. When `expected_entries` and/or `expected_tip` (a tip
+    previously recorded via `ledger_tip`) are supplied, a log that is SHORTER than expected or
+    whose tip hash differs is reported as broken (`reason` starts with 'truncated'/'tip mismatch'),
+    even though the surviving prefix hashes and signs correctly."""
     import base64
 
     p = Path(path)
@@ -424,5 +475,19 @@ def verify_chain(path: str | Path, public_key: bytes | None = None) -> ChainResu
                                        reason=f"signature verification failed at seq {entry.seq}", first_broken_seq=entry.seq)
             prev = entry.entry_hash
 
-    return ChainResult(ok=True, entries=i + 1, signed=signed,
+    count = i + 1
+    # Truncation anchor: the interior chain is intact, but the operator may have pinned how long
+    # the log should be / what its tip was. A shorter log or a different tip means recent entries
+    # were removed (an attacker who can write the file but cannot forge the signing key). `prev`
+    # holds the last entry's hash after the loop (GENESIS_PREV if empty).
+    if expected_entries is not None and count < expected_entries:
+        return ChainResult(ok=False, entries=count, signed=signed,
+                           reason=f"truncated: expected {expected_entries} entries, found {count}",
+                           first_broken_seq=count)
+    if expected_tip is not None and prev != expected_tip:
+        return ChainResult(ok=False, entries=count, signed=signed,
+                           reason="tip mismatch (log truncated or diverged from the anchored tip)",
+                           first_broken_seq=max(count - 1, 0))
+
+    return ChainResult(ok=True, entries=count, signed=signed,
                        reason="chain intact" if i >= 0 else "empty ledger")

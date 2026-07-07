@@ -52,7 +52,15 @@ _AIRLOCK_LAUNCHERS = frozenset({"airlock", "airlock-mcp"})
 def candidate_configs(home: Path, platform: str, cwd: Path, appdata: str | None = None) -> dict[str, list[Path]]:
     """The candidate config path(s) per client, resolved for a home dir + platform. Pure, so
     discovery is testable without touching the real filesystem. `platform` is os.sys.platform
-    ('darwin' / 'win32' / 'linux'); `appdata` is %APPDATA% on Windows."""
+    ('darwin' / 'win32' / 'linux'); `appdata` is %APPDATA% on Windows.
+
+    SECURITY: only USER-level config locations are auto-discovered. Project-local configs
+    (`./.mcp.json`, `./.cursor/mcp.json`) are deliberately NOT scanned: `airlock init`'s pin
+    step can launch a server, so auto-discovering a config from the current directory would let
+    a cloned/downloaded repo's checked-in `mcpServers` run an attacker command merely because
+    the user ran `init` inside it. A project-local config must be named explicitly with
+    `--config PATH`, which is a deliberate, per-file opt-in. `cwd` is accepted for signature
+    stability but no longer contributes candidates."""
     if platform == "darwin":
         desktop = home / "Library" / "Application Support" / "Claude" / "claude_desktop_config.json"
     elif platform.startswith("win"):
@@ -62,8 +70,8 @@ def candidate_configs(home: Path, platform: str, cwd: Path, appdata: str | None 
         desktop = home / ".config" / "Claude" / "claude_desktop_config.json"
     return {
         "claude-desktop": [desktop],
-        "cursor": [home / ".cursor" / "mcp.json", cwd / ".cursor" / "mcp.json"],
-        "claude-code": [home / ".claude.json", cwd / ".mcp.json"],
+        "cursor": [home / ".cursor" / "mcp.json"],
+        "claude-code": [home / ".claude.json"],
     }
 
 
@@ -101,15 +109,24 @@ def _launcher_command(command) -> bool:
 def is_wrapped(spec: dict, launcher: list[str]) -> bool:
     """True if this entry already routes through an airlock proxy (so init is idempotent).
 
-    Recognized by an airlock-launcher command (or the configured launcher) plus a `proxy`
-    subcommand in the args - independent of which flags follow."""
+    Recognized by an airlock-launcher plus a `proxy` subcommand in the args - independent of
+    which flags follow. The launcher may be the COMMAND (`airlock proxy ...`) or a token in the
+    args before `proxy` when a runner fronts it (`uvx airlock-mcp proxy ...`, `python -m
+    airlock.cli proxy ...`). Checking the args too keeps init idempotent even when a LATER run
+    uses a different --launcher than the one that first wrapped the config (otherwise the
+    unrecognized wrap gets wrapped again - `airlock proxy --exec uvx airlock-mcp proxy ...`)."""
     if not isinstance(spec, dict):
         return False
     args = spec.get("args") or []
     if not isinstance(args, list) or "proxy" not in args:
         return False
     command = spec.get("command")
-    return _launcher_command(command) or (bool(launcher) and command == launcher[0])
+    if _launcher_command(command) or (bool(launcher) and command == launcher[0]):
+        return True
+    # A wrap fronted by a runner: look for an airlock launcher token among the args that
+    # precede `proxy` (e.g. `uvx airlock-mcp proxy`, `python -m airlock.cli proxy`).
+    lead = args[: args.index("proxy")]
+    return any(_launcher_command(tok) for tok in lead) or "airlock.cli" in lead
 
 
 def wrap_spec(spec: dict, launcher: list[str], proxy_flags: list[str]) -> dict:

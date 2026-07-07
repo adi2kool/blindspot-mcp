@@ -135,6 +135,13 @@ _TOOL_SIGNALS: list[_Signal] = [
     (_EXFIL, (), _c(r"\b(upload|publish|export|share)\b|\bput object\b|\bs3 put\b"), "outbound upload or publish"),
     (_EXFIL, (), _c(r"\b(send|post|reply|dm|message|broadcast|announce|notify|publish) (to |a |an |the )?(slack|discord|telegram|whatsapp|channel|chat|thread|group)\b|\b(tweet|toot)\b|\bpost to\b|\bbroadcast\b|\bannounce\b"), "post to external channel"),
     (_EXFIL, (), _c(r"\b(create|open|file|submit) (an |a |the )?(issue|ticket|pull request|gist|paste)\b|\bpastebin\b"), "post to external system"),
+    # Generic outbound-transmission verbs that name no specific object: a tool called
+    # `forward`, `relay`, `dispatch_payload`, `transmit`, `beacon`, `exfiltrate`, `egress`
+    # moves data outward exactly as `send`/`post`/`upload` do, but the object-specific rules
+    # above miss the bare verb. These read as egress with no benign local meaning, so both the
+    # action gate (_is_side_effecting) and egress DLP (_is_exfil_tool) now see them - closing
+    # the classifier fail-open the audit flagged on common transmit verbs.
+    (_EXFIL, (), _c(r"\b(forward|forwards|relay|relays|transmit|transmits|dispatch|dispatches|exfiltrat\w+|beacon|beacons|egress)\b"), "outbound transmission verb"),
 ]
 
 # Resource signals run over normalized "uri name description". Resources are data

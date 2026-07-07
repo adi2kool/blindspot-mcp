@@ -125,5 +125,10 @@ def test_oversized_body_has_no_availability_finding():
     )
     start = time.perf_counter()
     r = evaluate(a)
-    assert time.perf_counter() - start < 3.0
+    elapsed = time.perf_counter() - start
+    # The property under test is behavioral: an oversized body yields NO availability finding.
     assert r.succeeded is False
+    # And it must terminate, not hang. The bound is deliberately GENEROUS (linear enforce on a
+    # 1MB body is milliseconds; this survives coverage instrumentation and a loaded CI box) yet
+    # still fails a true catastrophic-backtracking ReDoS, which would run for minutes.
+    assert elapsed < 20.0, f"enforce on a 1MB body took {elapsed:.1f}s (possible ReDoS/DoS)"

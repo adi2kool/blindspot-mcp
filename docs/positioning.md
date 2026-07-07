@@ -286,9 +286,9 @@ in-transit relabel without a signature (present when no signature is attached or
 configured). The malicious-server root cause is a trust-root problem no signature can close
 by definition, addressed instead by scanning and vetting; the unsigned-relabel root cause is
 closed once a key is configured. Both residuals are stated plainly in the threat model
-(`spec/convention.md` §3) rather than hidden. The full test suite is **307 passing** as of
-the most recent audit session; re-read `README.md` before quoting any of these numbers, as
-they move as the project grows. Every attack payload in the repository is
+(`spec/convention.md` §3) rather than hidden. The test suite is in the several hundreds and
+grows with each capability; run `pytest -q` for the current count rather than quoting a
+number here, since it moves as the project grows. Every attack payload in the repository is
 an inert fixture; nothing performs network, email, or filesystem I/O against a real target.
 
 ## Where Airlock sits alongside a gateway

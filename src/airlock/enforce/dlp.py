@@ -164,13 +164,26 @@ _US_SSN = _Detector(
 )
 _EMAIL = _Detector(
     "email",
-    re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"),
+    # Possessive local part + dot-delimited, length-bounded labels. The naive
+    # `[...]+@[...]+\.[...]` form is O(n^2) on a hostile no-`@` run (the local part backtracks
+    # every start position); this is the linear pattern the scanner already uses
+    # (scan/detectors/patterns.py). Load-bearing because this detector is operator-enableable
+    # (--dlp-optional email) and would otherwise be a reachable ReDoS on outbound args.
+    re.compile(r"\b[A-Za-z0-9._%+\-]{1,64}+@(?:[A-Za-z0-9\-]{1,63}\.){1,63}[A-Za-z]{2,24}\b"),
 )
 _E164_PHONE = _Detector(
     "phone",
     re.compile(r"(?<![\w])\+\d{1,3}[ -]?(?:\d[ -]?){7,13}\d\b"),
 )
 OPTIONAL_DETECTORS: dict[str, _Detector] = {d.name: d for d in (_US_SSN, _EMAIL, _E164_PHONE)}
+
+
+def detectors_for(optional: Iterable[str] = ()) -> tuple[_Detector, ...]:
+    """The default battery plus any requested opt-in detectors (by name). Unknown names are
+    ignored. This is how `airlock proxy --dlp-optional us_ssn,email` widens the scan without
+    hard-coding the set anywhere on the hot path."""
+    extra = tuple(OPTIONAL_DETECTORS[n] for n in dict.fromkeys(optional) if n in OPTIONAL_DETECTORS)
+    return DEFAULT_DETECTORS + extra
 
 
 @dataclass(frozen=True)
@@ -203,16 +216,35 @@ def scan_args_bounded(
 
     Returns (findings, complete). `complete` is False when the walk stopped before examining
     all content - a string longer than the remaining character budget (its tail is unscanned),
-    the character or node budget exhausted, or depth exceeded. This distinction is
+    the character or node budget exhausted, depth exceeded, or a secret found in a dict KEY
+    (which cannot be span-redacted in place, so it forces a fail-closed). This distinction is
     load-bearing: a caller enforcing block/redact must treat an INCOMPLETE scan as "a secret
     may be present" and fail CLOSED, because a hostile client can drive the budget to zero
     with a large filler value (or a single oversized field) and slip a real secret into the
-    unscanned tail. Numbers/booleans/None carry no secret string and are skipped, but still
-    count against the node budget so a wide non-string structure cannot stall the loop."""
+    unscanned tail.
+
+    Every LEAF is scanned, not just strings: a number leaf is scanned as its `str()` form, so
+    a card sent as a JSON integer (`{"amount": 4111111111111111}`) is caught, not silently
+    forwarded. Dict KEYS are scanned too, so a secret hidden as a key (`{"AKIA...": "x"}`) is
+    not a blind spot. Booleans and None carry no secret and are skipped, but still count
+    against the node budget so a wide non-string structure cannot stall the loop."""
     findings: list[Finding] = []
     budget = _MAX_TOTAL_CHARS
     nodes = _MAX_NODES
     incomplete = False
+
+    def scan_leaf(s: str, path: tuple[str | int, ...]) -> None:
+        """Scan one leaf string against the char budget, recording located findings."""
+        nonlocal budget, incomplete
+        if budget <= 0:
+            incomplete = True
+            return
+        if len(s) > budget:
+            incomplete = True  # tail past the budget is unscanned; a secret there is missed
+        chunk = s[:budget]
+        budget -= len(s)
+        for det, start, end in scan_value(chunk, detectors):
+            findings.append(Finding(det, path, start, end))
 
     def walk(node: object, path: tuple[str | int, ...], depth: int) -> None:
         nonlocal budget, nodes, incomplete
@@ -224,20 +256,28 @@ def scan_args_bounded(
             incomplete = True
             return
         if isinstance(node, str):
-            if budget <= 0:
-                incomplete = True
-                return
-            if len(node) > budget:
-                incomplete = True  # tail past the budget is unscanned; a secret there is missed
-            s = node[:budget]
-            budget -= len(node)
-            for det, start, end in scan_value(s, detectors):
-                findings.append(Finding(det, path, start, end))
+            scan_leaf(node, path)
+        elif isinstance(node, bool):
+            pass  # True / False carry no secret; the node is still counted above
+        elif isinstance(node, (int, float)):
+            # A numeric leaf can still be a secret (a card as an integer). Scan its text form;
+            # the whole value is the secret, so redact_args replaces the leaf wholesale.
+            scan_leaf(str(node), path)
         elif isinstance(node, dict):
             for k, v in node.items():
                 if nodes <= 0:
                     incomplete = True
                     return
+                # A secret can hide in a KEY, not just a value. Keys are not span-redactable in
+                # place, so a key hit forces the scan INCOMPLETE -> block/redact fail closed and
+                # the payload (secret key included) is never forwarded. Scan against the budget
+                # so a pathological key cannot escape the bound.
+                if isinstance(k, str) and k:
+                    if budget <= 0 or len(k) > budget:
+                        incomplete = True
+                    if budget > 0 and scan_value(k[:budget], detectors):
+                        incomplete = True
+                    budget -= len(k)
                 # Keep the ACTUAL key in the path (not str(k)) so redact_args' _navigate can
                 # look it up even for a non-string key. JSON args are string-keyed, so this is
                 # normally a no-op, but it keeps redaction sound for any dict.
@@ -317,10 +357,18 @@ def redact_args(arguments: object, findings: list[Finding]) -> object:
             continue
         parent, key = located
         value = parent[key]  # type: ignore[index]
-        if not isinstance(value, str):
-            continue
-        # Replace right-to-left so earlier spans keep their offsets.
-        for start, end, name in sorted(_merge_spans(spans), key=lambda t: t[0], reverse=True):
-            value = value[:start] + _REDACTION.format(name=name) + value[end:]
-        parent[key] = value  # type: ignore[index]
+        if isinstance(value, str):
+            # Replace right-to-left so earlier spans keep their offsets.
+            for start, end, name in sorted(_merge_spans(spans), key=lambda t: t[0], reverse=True):
+                value = value[:start] + _REDACTION.format(name=name) + value[end:]
+            parent[key] = value  # type: ignore[index]
+        elif isinstance(value, (int, float)) and not isinstance(value, bool):
+            # A numeric leaf that matched (a card as an integer): the whole value IS the secret,
+            # so replace it wholesale. The type becomes str, which is correct for a sanitized
+            # outbound call - and crucially the raw number never leaves in redact mode.
+            names = "+".join(sorted({name for _, _, name in spans}))
+            parent[key] = _REDACTION.format(name=names)  # type: ignore[index]
+        # else: a non-redactable leaf. scan_args_bounded already forced the scan INCOMPLETE for
+        # the only such case it emits (a secret in a dict key), so the proxy fails closed to a
+        # block; a raw secret is never forwarded under the guise of a completed redaction.
     return out

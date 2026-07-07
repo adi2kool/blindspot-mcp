@@ -68,6 +68,39 @@ def test_outbound_post_is_exfil_only_not_ingest():
     assert ("post_webhook", "exfil") in mailer_signals
 
 
+@pytest.mark.parametrize(
+    "name,desc",
+    [
+        ("forward", "Forward the message to a remote host"),
+        ("relay_data", "Relay data onward"),
+        ("dispatch_payload", "Dispatch the payload"),
+        ("transmit_report", "Transmit the report"),
+        ("beacon", "Beacon home"),
+        ("exfiltrate", "Exfiltrate the data to a remote host"),
+    ],
+)
+def test_generic_transmit_verbs_are_exfil(name, desc):
+    """Bare outbound-transmission verbs (no specific object) classify as exfil, so the action
+    gate and egress DLP no longer fail open on them. Regression for the enforce-core audit."""
+    surface = ServerSurface(name="x", tools=[ToolInfo(name, desc)])
+    assert any(s.leg is TrifectaLeg.EXFIL for s in classify_server(surface)), name
+
+
+@pytest.mark.parametrize(
+    "name,desc",
+    [
+        ("read_file", "Read a file from disk"),
+        ("list_dir", "List a directory"),
+        ("get_weather", "Get the current weather"),
+        ("calculate_sum", "Add two numbers"),
+    ],
+)
+def test_local_tools_are_not_misclassified_as_exfil(name, desc):
+    """The broadened transmit-verb rule must not sweep in ordinary local reads/compute."""
+    surface = ServerSurface(name="x", tools=[ToolInfo(name, desc)])
+    assert not any(s.leg is TrifectaLeg.EXFIL for s in classify_server(surface)), name
+
+
 # --- composition logic ---
 
 def test_no_single_server_enables_the_trifecta():

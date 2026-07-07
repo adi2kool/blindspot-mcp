@@ -66,6 +66,61 @@ def test_sanitizer_strips_lone_surrogates():
     assert strip_invisible("a\ud800b").text == "ab"
 
 
+def _strip_invisible_reference(text):
+    """A from-scratch reference with NO ascii fast-path, reusing sanitize's own primitives.
+    Any divergence between this and the shipped strip_invisible is a fast-path regression."""
+    from airlock.sanitize import (
+        TAG_END,
+        TAG_START,
+        SanitizeResult,
+        _is_strippable_invisible,
+        decode_tag_char,
+    )
+
+    out, removed, decoded_runs, run = [], 0, [], []
+    for ch in text:
+        cp = ord(ch)
+        if TAG_START <= cp < TAG_END:
+            d = decode_tag_char(cp)
+            if d is not None:
+                run.append(d)
+            continue
+        if _is_strippable_invisible(ch, cp):
+            removed += 1
+            continue
+        if run:
+            decoded_runs.append("".join(run))
+            run.clear()
+        out.append(ch)
+    if run:
+        decoded_runs.append("".join(run))
+    return SanitizeResult(text="".join(out), removed_zero_width=removed, decoded_tag_text=decoded_runs)
+
+
+def test_ascii_fast_path_is_byte_identical_to_slow_path():
+    """The isascii() fast-path must be a pure speedup: for every input (ascii AND non-ascii)
+    strip_invisible must equal the no-fast-path reference in text, count, and decoded runs."""
+    import random
+
+    pool = (
+        list("abcXYZ 0123.,/-_@:{}[]\"'")           # ordinary ascii
+        + ["​", "‍", "﻿", "‮", "­"]  # strippable invisibles (Cf)
+        + ["\U000e0041", "\U000e0062"]              # tag chars carrying 'A','b'
+        + ["️", "\U000e0100"]                  # variation selectors
+        + ["é", "Δ", "水", "\ud800"]                 # non-ascii visibles + a lone surrogate
+    )
+    rng = random.Random(1913)
+    for _ in range(3000):
+        s = "".join(rng.choice(pool) for _ in range(rng.randint(0, 40)))
+        got, ref = strip_invisible(s), _strip_invisible_reference(s)
+        assert got.text == ref.text
+        assert got.removed_zero_width == ref.removed_zero_width
+        assert got.decoded_tag_text == ref.decoded_tag_text
+        # The fast-path branch must only ever be taken when it is provably safe.
+        if s.isascii():
+            assert got.text == s and got.removed_zero_width == 0 and got.decoded_tag_text == []
+
+
 def test_surface_hash_total_on_malformed_surface():
     assert isinstance(surface_hash({"tools": "not-a-dict"}), str)
     assert isinstance(surface_hash({"tools": {"t": {"description": "x \udce9 y"}}}), str)

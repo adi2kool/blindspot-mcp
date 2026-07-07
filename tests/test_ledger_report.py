@@ -111,6 +111,29 @@ def test_report_strips_hostile_control_chars(tmp_path):
     assert "evil[31mRED[0mFORGED" in human
 
 
+def test_summary_and_window_fields_strip_control_chars(tmp_path):
+    """The window (first/last ts), the egress detector histogram, and the chain reason are all
+    server-influenced (forged ledger / hostile tool name), so they must be control-char-stripped
+    like the timeline - not just html.escape'd. Regression for the onboard/ledger audit."""
+    path = tmp_path / "audit.jsonl"
+    led = Ledger(path)
+    led.append(EV_ENFORCE, surface="tool", ident="a", disposition="untrusted")
+    led.record_egress("send_email", "block", ["\x1b[31mPWNED\x1b[0m\nFORGED"], 1, blocked=True, tainted=True)
+    # Forge a control-char timestamp on the first entry (what a hostile/forged ledger looks like).
+    lines = [json.loads(x) for x in path.read_text().splitlines()]
+    lines[0]["ts"] = "2020\x1b[2K\rFORGED"
+    path.write_text("\n".join(json.dumps(x) for x in lines) + "\n")
+
+    rep = build_report(path)
+    human = render_human(rep)
+    html_out = render_html(rep)
+    # No raw ESC survives in EITHER rendering (window line, egress detector histogram, reason).
+    assert "\x1b" not in human
+    assert "\x1b" not in html_out
+    # The (now inert) printable text of the detector name still appears.
+    assert "PWNED" in human
+
+
 def test_missing_ledger_does_not_crash(tmp_path):
     rep = build_report(tmp_path / "does-not-exist.jsonl")
     assert rep.chain.ok is False
@@ -141,3 +164,22 @@ def test_cli_report_broken_chain_exits_nonzero(tmp_path):
     del lines[2]  # drop an entry -> chain break
     path.write_text("\n".join(lines) + "\n")
     assert cli.main(["report", str(path), "--format", "json"]) == 1
+
+
+def test_cli_verify_log_tip_anchor_detects_truncation(tmp_path, capsys):
+    """verify-log --print-tip anchors the tip; --expect-count/--expect-tip then catches a tail
+    truncation that a plain verify (exit 0) misses."""
+    path = tmp_path / "audit.jsonl"
+    _make_ledger(path)  # 7 entries
+    assert cli.main(["verify-log", str(path), "--print-tip", "--format", "json"]) == 0
+    tip = json.loads(capsys.readouterr().out)
+    assert tip["entries"] == 7 and len(tip["tip"]) == 64
+
+    # Drop the last 3 entries.
+    lines = path.read_text().splitlines()
+    path.write_text("\n".join(lines[:4]) + "\n")
+    # Plain verify still passes (the surviving prefix is a valid chain)...
+    assert cli.main(["verify-log", str(path)]) == 0
+    # ...but the anchor makes it fail, exit nonzero (CI-gateable).
+    assert cli.main(["verify-log", str(path), "--expect-count", str(tip["entries"])]) == 1
+    assert cli.main(["verify-log", str(path), "--expect-tip", tip["tip"]]) == 1

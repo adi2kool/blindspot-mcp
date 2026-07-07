@@ -97,6 +97,7 @@ class ProxyPolicy:
         sampling_mode: str = "frame",
         elicitation_mode: str = "frame",
         egress_mode: str = "annotate",
+        egress_optional: tuple[str, ...] = (),
         taint_context: str | None = None,
         taint_ttl: float = 3600.0,
     ) -> None:
@@ -174,6 +175,10 @@ class ProxyPolicy:
         #   block   : refuse the call outright; do NOT forward upstream (the secret never
         #             leaves the boundary).
         self.egress_mode = egress_mode
+        # egress_optional: names of opt-in DLP detectors (us_ssn / email / phone) to add to the
+        # default battery. Off by default because their shape collides with benign business data
+        # (a recipient email is legitimate in a send_email arg); enable only where warranted.
+        self.egress_optional = tuple(egress_optional)
         # taint_context: a directory shared by every proxy fronting the servers of ONE client
         # (airlock init gives them the same one). When set, untrusted content enforced by any
         # proxy in the context taints the whole context, so a side-effecting call to a
@@ -532,7 +537,7 @@ def _apply_egress(
             return arguments, None
         if not _is_exfil_tool(name, description):
             return arguments, None
-        findings, complete = dlp.scan_args_bounded(arguments)
+        findings, complete = dlp.scan_args_bounded(arguments, dlp.detectors_for(policy.egress_optional))
         # An INCOMPLETE scan (outbound args exceed the size / width / depth the scanner will
         # examine) means "no finding" no longer implies "no secret": a hostile client can hide
         # a real secret in the unscanned tail behind a large filler value. In block/redact,
@@ -1189,6 +1194,15 @@ def make_proxy(
                     blocks.append(block)
                 structured = getattr(result, "structuredContent", None)
                 if structured is not None:
+                    # KNOWN RESIDUAL: structuredContent is relayed VERBATIM, not data-framed.
+                    # A tool's outputSchema binds this field's shape, so wrapping its string
+                    # leaves in an <<UNTRUSTED DATA>> frame would make the result fail the
+                    # client's schema validation. We therefore cannot demarcate an injection a
+                    # hostile server hides here. It is NOT unmitigated: the session is tainted
+                    # unconditionally below, so any later side-effecting/exfil call is still
+                    # gated (convention section 8) and egress DLP still scans it. The residual
+                    # is limited to model/output manipulation from undemarcated text - the same
+                    # class as any untrusted content the model reads, minus the data frame.
                     _maybe_taint(state, _passthrough_applied())
                 return types.CallToolResult(
                     content=blocks,

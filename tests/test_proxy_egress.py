@@ -209,3 +209,49 @@ def test_apply_egress_block_fails_closed_on_ledger_error():
     out, blocked = proxy._apply_egress("send_email", args, "send an email", policy, _BoomLedger(), False)
     assert blocked is not None  # refused despite the ledger error (fail-closed)
     assert out is args  # upstream never receives modified args because block short-circuits
+
+
+@pytest.mark.asyncio
+async def test_egress_block_catches_card_sent_as_integer():
+    """block-mode bypass regression: a card formatted as a JSON integer (not a string) must
+    still be refused. The proxy never forwards it, so the number never leaves the boundary."""
+    async with stdio_client(_egress_params("--on-egress", "block")) as (read, write):
+        async with ClientSession(read, write) as session:
+            await session.initialize()
+            result = await session.call_tool(
+                "send_email",
+                {"to": "ops@example.com", "body": "invoice", "amount": 4111111111111111},
+            )
+            text = _joined(result)
+            assert "BLOCKED" in text
+            assert "4111111111111111" not in text  # the raw number is not echoed
+            assert "email sent" not in text  # the fixture was never invoked
+            enf = _first_meta(result).get(ENFORCEMENT_NS, {})
+            assert enf.get("egress_blocked") is True
+
+
+@pytest.mark.asyncio
+async def test_dlp_optional_email_off_by_default_on_by_flag():
+    """--dlp-optional wires the opt-in detectors (email/ssn/phone). Off by default (an email in
+    an outbound arg is legitimate), on when requested. Regression for the rigor audit."""
+    # Default: an email in the body is NOT blocked.
+    async with stdio_client(_egress_params("--on-egress", "block")) as (read, write):
+        async with ClientSession(read, write) as session:
+            await session.initialize()
+            r = await session.call_tool("send_email", {"to": "ops@example.com", "body": "ping alice@corp.com"})
+            assert "email sent" in _joined(r)  # forwarded (email is not a default detector)
+
+    # With --dlp-optional email: the same call is blocked.
+    async with stdio_client(_egress_params("--on-egress", "block", "--dlp-optional", "email")) as (read, write):
+        async with ClientSession(read, write) as session:
+            await session.initialize()
+            r = await session.call_tool("send_email", {"to": "ops@example.com", "body": "ping alice@corp.com"})
+            assert "BLOCKED" in _joined(r)
+            assert "email" in _first_meta(r).get(ENFORCEMENT_NS, {}).get("detectors", [])
+
+
+def test_cli_proxy_rejects_unknown_dlp_optional():
+    """An unknown --dlp-optional name is a hard error, not a silent no-op."""
+    from airlock import cli
+
+    assert cli.main(["proxy", "x.py", "--dlp-optional", "bogus"]) == 2

@@ -11,7 +11,10 @@ import pytest
 
 from airlock.enforce import dlp
 
-# Real-looking-but-inert secrets (all fake / documented test values).
+# Real-looking-but-inert secrets (all fake / documented test values). The token-shaped ones
+# are written as two adjacent string literals ("xoxb-" "123...") that Python concatenates at
+# parse time to the exact value the detector must match - leaving no CONTIGUOUS secret-shaped
+# literal in the source for a push-protection secret scanner to flag.
 AWS_KEY = "AKIA" "IOSFODNN7EXAMPLE"
 GITHUB_TOKEN = "ghp_" "0123456789abcdefghijklmnopqrstuvwxyz"  # ghp_ + 36 chars
 SLACK_TOKEN = "xoxb-" "123456789012-abcdefghijklmnop"
@@ -171,3 +174,56 @@ def test_card_grouping_rejects_glued_digit_list_but_keeps_real_cards():
     assert "credit_card" in {n for n, _s, _e in dlp.scan_value(VISA_SPACED)}
     assert "credit_card" in {n for n, _s, _e in dlp.scan_value(VISA)}
     assert "credit_card" in {n for n, _s, _e in dlp.scan_value("4111-1111-1111-1111")}
+
+
+# --- Egress must see non-string leaves and dict keys (block-mode bypass regression) -------
+
+def test_credit_card_as_integer_leaf_is_detected():
+    """A card sent as a JSON integer (not a string) must still be found, so block/redact
+    cannot be bypassed by numeric formatting. Regression for the enforce-core audit."""
+    findings, complete = dlp.scan_args_bounded({"to": "x@e.com", "amount": 4111111111111111})
+    assert complete is True
+    assert {"credit_card"} == {f.detector for f in findings}
+
+
+def test_redact_replaces_numeric_secret_leaf_wholesale():
+    """Redact mode must not silently forward a numeric secret it detected."""
+    args = {"amount": 4111111111111111}
+    findings, _ = dlp.scan_args_bounded(args)
+    red = dlp.redact_args(args, findings)
+    assert red == {"amount": "[REDACTED:credit_card]"}
+    assert "4111111111111111" not in str(red)
+    assert args == {"amount": 4111111111111111}  # original never mutated
+
+
+def test_boolean_leaf_is_not_scanned_as_a_number():
+    # bool is an int subclass; True/False must not be coerced to a "number" to scan.
+    findings, complete = dlp.scan_args_bounded({"flag": True, "ok": False})
+    assert findings == [] and complete is True
+
+
+def test_secret_in_dict_key_forces_incomplete_fail_closed():
+    """A secret hidden as a dict KEY is not span-redactable, so the scan is marked incomplete
+    and the proxy fails closed (block) rather than forwarding the key. Regression."""
+    findings, complete = dlp.scan_args_bounded({AWS_KEY: "value"})
+    assert complete is False  # -> block/redact fail closed
+
+
+def test_benign_keys_do_not_trip_incomplete():
+    # Ordinary argument keys must never force a fail-closed.
+    findings, complete = dlp.scan_args_bounded(
+        {"to": "a@b.com", "subject": "hi", "body": "text", "amount": 12}
+    )
+    assert findings == [] and complete is True
+
+
+def test_optional_email_detector_is_linear_not_redos():
+    """The operator-enableable email detector must be linear on a hostile no-`@` run
+    (the naive pattern was O(n^2)). Regression for the performance audit."""
+    import time
+
+    dets = dlp.DEFAULT_DETECTORS + (dlp.OPTIONAL_DETECTORS["email"],)
+    evil = "a@" + "a." * 80_000  # 160 KB; the quadratic form took ~16 s here
+    start = time.perf_counter()
+    dlp.scan_value(evil, dets)
+    assert time.perf_counter() - start < 1.0
