@@ -1201,11 +1201,22 @@ def make_proxy(
     return server
 
 
-async def run_proxy(upstream: str, is_http: bool, policy: ProxyPolicy) -> None:
+async def run_proxy(
+    upstream: str,
+    is_http: bool,
+    policy: ProxyPolicy,
+    stdio_command: str | None = None,
+    stdio_args: list[str] | None = None,
+) -> None:
     """Connect to the upstream, then serve the enforcing proxy over stdio.
 
     The upstream session stays open for the life of the proxy. The client speaks to the
     proxy over this process's stdio, so nothing but MCP protocol may touch stdout.
+
+    `stdio_command`/`stdio_args` front an ARBITRARY local command as the upstream (e.g.
+    `npx -y @scope/server`, `uvx server`) instead of the default `python <upstream>`, so the
+    proxy can wrap the Node/uv/binary servers `airlock init` finds in a client config, not
+    just python scripts. `upstream` is then just a label for logs and the audit trail.
     """
     ledger = (
         Ledger(policy.audit_log, sign_key=policy.audit_sign_key, keyid=policy.audit_keyid)
@@ -1235,6 +1246,8 @@ async def run_proxy(upstream: str, is_http: bool, policy: ProxyPolicy) -> None:
 
     async with connect(
         upstream, is_http,
+        stdio_command=stdio_command,
+        stdio_args=stdio_args,
         sampling_callback=_sampling_cb,
         elicitation_callback=_elicitation_cb,
         message_handler=_message_handler,

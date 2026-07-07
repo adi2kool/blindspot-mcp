@@ -15,7 +15,9 @@
   airlock prevalence MANIFEST [--format human|json] [--anonymize] [--allow-remote]
   airlock prevalence-source MANIFEST [--format human|json] [--anonymize]
   airlock keygen   [--private PATH] [--public PATH] [--jwks PATH] [--kid ID]
-  airlock proxy    TARGET [--http] [--assume-origin ...] [--infer] [--require-signature]
+  airlock init     [--client claude-desktop|cursor|claude-code|all] [--dry-run]
+                            [--on-action ...] [--on-egress ...] [--no-lock] [--launcher CMD]
+  airlock proxy    TARGET [--http] [--exec CMD ...] [--assume-origin ...] [--infer] [--require-signature]
                             [--key PATH] [--key-alg hmac-sha256|ed25519] [--keystore PATH]
                             [--on-action annotate|approve|block]
                             [--on-egress annotate|redact|block] [--explain]
@@ -38,10 +40,12 @@ analyzes a set of servers together and flags when they jointly enable the lethal
 trifecta (private-data access plus untrusted content plus an exfiltration path);
 `prevalence` runs the Phase C study over a manifest of servers (local install,
 scan-only, license-gated) and reports how widespread injectable surface is;
-`proxy` runs an enforcing proxy that fronts a server and applies the client contract to
-everything it emits, so an unmodified client is protected end to end (add `--explain` for a
-live decision stream); `report` renders a proxy audit trail (the flight recorder) as a
-readable summary, JSON, or a self-contained HTML page.
+`init` detects your MCP client config (Claude Desktop / Cursor / Claude Code) and wraps every
+server behind the proxy in one command, pinning each surface into a lockfile in the same pass;
+`proxy` runs an enforcing proxy that fronts a server (a script TARGET, an `--http` URL, or any
+command via `--exec`) and applies the client contract to everything it emits, so an unmodified
+client is protected end to end (add `--explain` for a live decision stream); `report` renders a
+proxy audit trail (the flight recorder) as a readable summary, JSON, or a self-contained HTML page.
 """
 
 from __future__ import annotations
@@ -349,6 +353,119 @@ def _cmd_report(args: argparse.Namespace) -> int:
     return 0 if rep.chain.ok else 1
 
 
+def _pin_upstream(command: str, cargs: list[str], lockpath: Path) -> bool:
+    """Launch a stdio server via `command cargs...`, capture its surface, and write a trust
+    lockfile pinning it. Best-effort: returns False (and warns) if the server cannot be
+    launched, so onboarding still wraps it, just without a rug-pull pin."""
+    from airlock.lockfile import generate_lock
+    from airlock.scan.client import connect
+    from airlock.scan.drift import capture_surface
+
+    async def _cap() -> dict:
+        async with connect(command, False, stdio_command=command, stdio_args=cargs) as (session, _init):
+            return await capture_surface(session)
+
+    try:
+        surface = asyncio.run(_cap())
+        lock = generate_lock(surface)
+        lockpath.parent.mkdir(parents=True, exist_ok=True)
+        lockpath.write_text(json.dumps(lock, indent=2, ensure_ascii=False), encoding="utf-8")
+        return True
+    except Exception as exc:  # noqa: BLE001 - a server that will not launch is still wrapped
+        print(f"    (could not pin {command}: {_root_cause(exc)}; wrapping without a lock)",
+              file=sys.stderr)
+        return False
+
+
+def _cmd_init(args: argparse.Namespace) -> int:
+    import os
+    import shlex
+
+    from airlock import onboard
+
+    clients = onboard.CLIENTS if args.client == "all" else (args.client,)
+    found = onboard.discover(
+        clients, Path.home(), sys.platform, Path.cwd(), os.environ.get("APPDATA")
+    )
+    if not found:
+        print("no MCP client config found (looked for Claude Desktop / Cursor / Claude Code).",
+              file=sys.stderr)
+        return 1
+
+    launcher = shlex.split(args.launcher) if args.launcher else ["airlock"]
+    base_flags: list[str] = []
+    if args.on_action:
+        base_flags += ["--on-action", args.on_action]
+    if args.on_egress:
+        base_flags += ["--on-egress", args.on_egress]
+    audit_dir = Path(args.audit_dir).expanduser() if args.audit_dir else Path.home() / ".airlock" / "audit"
+    lock_dir = Path(args.lock_dir).expanduser() if args.lock_dir else Path.home() / ".airlock" / "locks"
+
+    total_wrapped = 0
+    for client, path in found:
+        try:
+            original_text = path.read_text(encoding="utf-8")
+            doc = json.loads(original_text)
+        except (OSError, ValueError) as exc:
+            print(f"! {client}: cannot read {path} ({exc}); skipping", file=sys.stderr)
+            continue
+        servers = onboard.read_servers(doc)
+        print(f"{client}: {path}")
+        if not servers:
+            print("  (no mcpServers; nothing to do)")
+            continue
+
+        # Phase 1: pin each wrappable stdio server (best-effort, real run only).
+        locks: dict[str, Path] = {}
+        if not args.no_lock and not args.dry_run:
+            for name, spec in servers.items():
+                if onboard.is_wrapped(spec, launcher):
+                    continue
+                if isinstance(spec, dict) and spec.get("command") and not spec.get("url"):
+                    lp = lock_dir / f"{name}.lock"
+                    if _pin_upstream(spec["command"], list(spec.get("args") or []), lp):
+                        locks[name] = lp
+
+        def flags_for(name, _spec):
+            f = list(base_flags)
+            if not args.no_audit:
+                f += ["--audit-log", str(audit_dir / f"{name}.jsonl")]
+            if name in locks:
+                f += ["--lock", str(locks[name])]
+            return f
+
+        plans = onboard.plan_servers(servers, launcher, flags_for)
+        wrapped = 0
+        for p in plans:
+            if p.action == "skip-wrapped":
+                print(f"  = {p.name}: already wrapped")
+            elif p.action == "skip-unwrappable":
+                print(f"  ! {p.name}: no command or url; left unchanged")
+            else:  # wrap
+                servers[p.name] = p.new_spec
+                pinned = " +pinned" if p.name in locks else ""
+                print(f"  + {p.name}: wrapped{pinned}")
+                wrapped += 1
+                total_wrapped += 1
+
+        if wrapped and not args.dry_run:
+            backup = path.with_name(path.name + ".airlock.bak")
+            if not backup.exists():
+                backup.write_text(original_text, encoding="utf-8")
+            if not args.no_audit:
+                audit_dir.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(doc, indent=2, ensure_ascii=False), encoding="utf-8")
+            print(f"  wrote {path}  (backup: {backup.name})")
+
+    if args.dry_run:
+        print(f"\ndry run: {total_wrapped} server(s) would be wrapped. Re-run without --dry-run to apply.")
+    else:
+        print(f"\ndone: wrapped {total_wrapped} server(s). "
+              f"Restart the client, then `airlock report <audit>.jsonl` to see what it stops. "
+              f"Restore any config from its .airlock.bak backup.")
+    return 0
+
+
 def _cmd_drift(args: argparse.Namespace) -> int:
     if _target_missing(args):
         print(f"error: target script not found: {args.target}", file=sys.stderr)
@@ -461,9 +578,22 @@ def _cmd_keygen(args: argparse.Namespace) -> int:
 def _cmd_proxy(args: argparse.Namespace) -> int:
     from airlock.enforce.proxy import ProxyPolicy, run_proxy
 
-    if _target_missing(args):
-        print(f"error: upstream server not found: {args.target}", file=sys.stderr)
-        return 2
+    # --exec fronts an arbitrary command as the upstream; a plain TARGET fronts a python
+    # script or (with --http) an HTTP URL. Exactly one source of the upstream is required.
+    exec_cmd = getattr(args, "exec", None) or None
+    if exec_cmd:
+        if args.http:
+            print("error: --exec fronts a stdio command; do not combine it with --http",
+                  file=sys.stderr)
+            return 2
+    else:
+        if not getattr(args, "target", None):
+            print("error: proxy needs a TARGET (a server path, or an --http URL) or --exec CMD",
+                  file=sys.stderr)
+            return 2
+        if _target_missing(args):
+            print(f"error: upstream server not found: {args.target}", file=sys.stderr)
+            return 2
     key = None
     if args.key:
         # The algorithm of a directly-configured --key must be declared, never inferred
@@ -560,12 +690,15 @@ def _cmd_proxy(args: argparse.Namespace) -> int:
             lg.setLevel(logging.INFO)
             lg.addHandler(handler)
             lg.propagate = False
+    stdio_command = exec_cmd[0] if exec_cmd else None
+    stdio_args = exec_cmd[1:] if exec_cmd else None
+    label = args.target or (" ".join(exec_cmd) if exec_cmd else "")
     # The proxy speaks MCP over stdio; nothing may print to stdout here. Status and
     # errors go to stderr only.
-    print(f"airlock proxy: fronting {args.target} (stdio); enforcing the client contract",
+    print(f"airlock proxy: fronting {label} (stdio); enforcing the client contract",
           file=sys.stderr)
     try:
-        asyncio.run(run_proxy(args.target, args.http, policy))
+        asyncio.run(run_proxy(label, args.http, policy, stdio_command, stdio_args))
     except KeyboardInterrupt:
         return 0
     except Exception as exc:  # noqa: BLE001 - connection/protocol failure
@@ -764,6 +897,35 @@ def build_parser() -> argparse.ArgumentParser:
                       help="restrict verification to this keyid (repeatable)")
     lock.set_defaults(func=_cmd_lock)
 
+    init = sub.add_parser(
+        "init",
+        help="detect your MCP client config and wrap every server behind the enforcing proxy",
+    )
+    init.add_argument(
+        "--client", choices=["claude-desktop", "cursor", "claude-code", "all"], default="all",
+        help="which client's config to wrap (default: all detected)",
+    )
+    init.add_argument(
+        "--launcher", metavar="CMD", default=None,
+        help="how the rewritten config invokes airlock (default: 'airlock'; e.g. "
+        "'uvx airlock-mcp' or 'python -m airlock.cli')",
+    )
+    init.add_argument("--on-action", choices=["annotate", "approve", "block"], default=None,
+                      help="bake this action-gate mode into every wrapped server (default: annotate)")
+    init.add_argument("--on-egress", choices=["annotate", "redact", "block"], default=None,
+                      help="bake this egress-DLP mode into every wrapped server (default: annotate)")
+    init.add_argument("--no-lock", action="store_true",
+                      help="do not launch each server to pin its surface into a lockfile")
+    init.add_argument("--no-audit", action="store_true",
+                      help="do not bake an --audit-log path into wrapped servers")
+    init.add_argument("--audit-dir", metavar="DIR", default=None,
+                      help="where wrapped servers write audit trails (default: ~/.airlock/audit)")
+    init.add_argument("--lock-dir", metavar="DIR", default=None,
+                      help="where pinned lockfiles are written (default: ~/.airlock/locks)")
+    init.add_argument("--dry-run", action="store_true",
+                      help="show what would change without writing anything")
+    init.set_defaults(func=_cmd_init)
+
     report = sub.add_parser(
         "report",
         help="render a proxy audit trail (flight recorder) as a readable summary or HTML",
@@ -882,7 +1044,9 @@ def build_parser() -> argparse.ArgumentParser:
         "proxy",
         help="run an enforcing proxy that fronts a server and applies the client contract",
     )
-    proxy.add_argument("target", help="upstream stdio server script path, or an HTTP URL with --http")
+    proxy.add_argument("target", nargs="?", default=None,
+                       help="upstream stdio server script path, or an HTTP URL with --http "
+                       "(omit when using --exec)")
     proxy.add_argument("--http", action="store_true", help="treat TARGET as a streamable HTTP URL")
     proxy.add_argument(
         "--assume-origin",
@@ -995,6 +1159,13 @@ def build_parser() -> argparse.ArgumentParser:
     proxy.add_argument(
         "--approval-timeout", type=float, default=300.0, metavar="SECONDS",
         help="how long to wait for an approval decision before failing closed (default: 300)",
+    )
+    proxy.add_argument(
+        "--exec", nargs=argparse.REMAINDER, default=None, metavar="CMD",
+        help="front an ARBITRARY command as the upstream stdio server instead of a script "
+        "TARGET (everything after --exec is the command, e.g. --exec npx -y @scope/server). "
+        "This is how `airlock init` wraps Node/uv/binary servers. Put all other proxy flags "
+        "BEFORE --exec.",
     )
     proxy.set_defaults(func=_cmd_proxy)
 
