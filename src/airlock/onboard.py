@@ -14,10 +14,27 @@ each server once to pin its surface into a lockfile (rug-pull defense) in the sa
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
 CLIENTS = ("claude-desktop", "cursor", "claude-code")
+
+_UNSAFE_NAME = re.compile(r"[^A-Za-z0-9._-]")
+
+
+def safe_component(name: str) -> str:
+    """A filesystem-safe single path component derived from a server name.
+
+    A server name is a config KEY controlled by whoever authored the config (including a
+    project-local `.mcp.json` in a cloned repo), and `airlock init` uses it to build lockfile
+    and audit-log paths. Left raw, a name like `../../x` or `/etc/x` would traverse or escape
+    to an absolute path and write outside the intended directory. This replaces every
+    character outside [A-Za-z0-9._-] with `_` (so no path separator survives), strips leading
+    dots (no hidden or `..` names), bounds the length, and falls back to `server` if nothing
+    is left - guaranteeing the result is a plain component that stays inside its directory."""
+    safe = _UNSAFE_NAME.sub("_", str(name)).lstrip(".")
+    return safe[:100] or "server"
 
 # Command basenames that mean "this entry is already an airlock proxy" (idempotency).
 _AIRLOCK_LAUNCHERS = frozenset({"airlock", "airlock-mcp"})

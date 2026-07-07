@@ -121,6 +121,26 @@ def test_redact_args_multiple_secrets_in_one_string():
     assert "[REDACTED:credit_card]" in redacted["body"]
 
 
+def test_scan_args_bounded_flags_incomplete_on_oversize():
+    # A large filler leaf exhausts the shared budget so a LATER secret leaf is unscanned:
+    # the scan is incomplete, which the proxy must treat as "a secret may be present".
+    _f, complete = dlp.scan_args_bounded({"filler": "x" * 1_000_001, "body": AWS_KEY})
+    assert complete is False
+    # A single >1MB field: the secret past the budget is unscanned -> incomplete.
+    _f2, c2 = dlp.scan_args_bounded({"body": "lorem " * 180_000 + " " + AWS_KEY})
+    assert c2 is False
+    # A normal small args set is COMPLETE (no regression on the common path).
+    _f3, c3 = dlp.scan_args_bounded({"to": "ops@example.com", "body": "ship it"})
+    assert c3 is True
+
+
+def test_scan_args_bounded_wide_nonstring_is_bounded():
+    # Millions of non-string nodes must not stall: the node budget bounds the walk and marks
+    # the scan incomplete (the character budget alone would never fire here).
+    _f, complete = dlp.scan_args_bounded({"nums": list(range(300_000))})
+    assert complete is False
+
+
 def test_redact_args_no_findings_is_identity():
     args = {"body": "nothing secret here"}
     assert dlp.redact_args(args, []) is args

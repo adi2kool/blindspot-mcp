@@ -20,8 +20,19 @@ from __future__ import annotations
 
 import html
 import json
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
+
+# C0/C1 control characters (incl. ESC 0x1b, CR, LF, BEL). Ledger idents and detail come from
+# a HOSTILE server (it controls tool names), so a value printed to a terminal could otherwise
+# emit ANSI escape sequences or forge extra log lines. Strip them before rendering.
+_CONTROL = re.compile(r"[\x00-\x1f\x7f-\x9f]")
+
+
+def _clean(s: object) -> str:
+    """Strip terminal/log-forging control characters from a server-controlled string."""
+    return _CONTROL.sub("", str(s))
 
 from airlock import __version__ as _VERSION
 from airlock.ledger import (
@@ -250,11 +261,11 @@ def render_human(rep: LedgerReport) -> str:
     else:
         lines.append(f"timeline ({len(notable)} notable of {s.entries}):")
         for e in notable:
-            ts = (e.get("ts") or "")[11:19]  # HH:MM:SS
-            ident = e.get("ident", "")
-            ehash = (e.get("entry_hash") or "")[:12]
-            lines.append(f"  {ts}  {_EVENT_LABEL.get(e.get('event',''), e.get('event','')):<16}"
-                         f"  {ident:<28}  {_outcome(e)}   #{ehash}")
+            ts = _clean((e.get("ts") or "")[11:19])  # HH:MM:SS
+            ident = _clean(e.get("ident", ""))
+            label = _clean(_EVENT_LABEL.get(e.get("event", ""), e.get("event", "")))
+            ehash = _clean((e.get("entry_hash") or "")[:12])
+            lines.append(f"  {ts}  {label:<16}  {ident:<28}  {_clean(_outcome(e))}   #{ehash}")
     return "\n".join(lines)
 
 
@@ -350,11 +361,11 @@ def render_html(rep: LedgerReport) -> str:
     for e in rep.entries:
         if not _is_notable(e):
             continue
-        ts = html.escape((e.get("ts") or "")[:19].replace("T", " "))
-        label = html.escape(_EVENT_LABEL.get(e.get("event", ""), e.get("event", "")))
-        ident = html.escape(str(e.get("ident", "")))
-        ehash = html.escape((e.get("entry_hash") or "")[:16])
-        outcome = html.escape(_outcome(e))
+        ts = html.escape(_clean((e.get("ts") or "")[:19].replace("T", " ")))
+        label = html.escape(_clean(_EVENT_LABEL.get(e.get("event", ""), e.get("event", ""))))
+        ident = html.escape(_clean(e.get("ident", "")))
+        ehash = html.escape(_clean((e.get("entry_hash") or "")[:16]))
+        outcome = html.escape(_clean(_outcome(e)))
         rows.append(
             f'<tr><td class="mono">{ts}</td><td class="ev">{label}</td>'
             f'<td>{ident}</td><td class="{_outcome_class(e)}">{outcome}</td>'

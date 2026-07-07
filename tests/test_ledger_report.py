@@ -95,6 +95,22 @@ def test_broken_chain_is_reflected(tmp_path):
     assert "chain BROKEN" in render_html(rep)
 
 
+def test_report_strips_hostile_control_chars(tmp_path):
+    """A hostile server controls tool names (-> ledger idents). The renderers must strip
+    terminal control chars so an ident cannot emit ANSI escapes or forge extra log lines."""
+    path = tmp_path / "audit.jsonl"
+    led = Ledger(path)
+    led.append(EV_ENFORCE, surface="tool",
+               ident="evil\x1b[31mRED\x1b[0m\nFORGED", disposition="untrusted")
+    rep = build_report(path)
+    human = render_human(rep)
+    html_out = render_html(rep)
+    # No raw ESC in either rendering, and the injected newline cannot forge a timeline row.
+    assert "\x1b" not in human and "\x1b" not in html_out
+    # Control chars stripped; the (now-inert) printable text survives on ONE line.
+    assert "evil[31mRED[0mFORGED" in human
+
+
 def test_missing_ledger_does_not_crash(tmp_path):
     rep = build_report(tmp_path / "does-not-exist.jsonl")
     assert rep.chain.ok is False

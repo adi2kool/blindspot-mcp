@@ -66,6 +66,20 @@ def test_is_wrapped_idempotency():
     assert onboard.is_wrapped({"command": "airlock", "args": ["proxy", "--exec", "x"]}, ["uvx", "airlock-mcp"]) is True
 
 
+def test_safe_component_neutralizes_traversal():
+    # A hostile server name (config key) must never yield a path separator, an absolute
+    # escape, a leading dot (hidden / traversal), or an empty component.
+    assert onboard.safe_component("/abs/path") == "_abs_path"
+    assert onboard.safe_component("..") == "server"
+    assert onboard.safe_component("") == "server"
+    assert onboard.safe_component("normal-name_1.2") == "normal-name_1.2"
+    for hostile in ["../../../pwn", "/etc/cron.d/x", "..\\..\\win", "a/b/c", "\x00evil", "  ../x"]:
+        s = onboard.safe_component(hostile)
+        assert "/" not in s and "\\" not in s
+        assert not s.startswith(".")
+        assert s  # never empty
+
+
 def test_plan_servers_categorizes():
     spec_stdio = {"command": "npx", "args": ["-y", "@a/s"]}
     servers = {

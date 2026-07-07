@@ -422,14 +422,18 @@ def _cmd_init(args: argparse.Namespace) -> int:
                 if onboard.is_wrapped(spec, launcher):
                     continue
                 if isinstance(spec, dict) and spec.get("command") and not spec.get("url"):
-                    lp = lock_dir / f"{name}.lock"
+                    # Sanitize the server name before it becomes a path component: a hostile
+                    # config key must not traverse or escape the lock dir.
+                    lp = lock_dir / f"{onboard.safe_component(name)}.lock"
                     if _pin_upstream(spec["command"], list(spec.get("args") or []), lp):
                         locks[name] = lp
 
         def flags_for(name, _spec):
             f = list(base_flags)
             if not args.no_audit:
-                f += ["--audit-log", str(audit_dir / f"{name}.jsonl")]
+                # Sanitize the name for the same reason: the baked --audit-log path is opened
+                # (mkdir + append) at proxy runtime, so a traversing name would write outside.
+                f += ["--audit-log", str(audit_dir / f"{onboard.safe_component(name)}.jsonl")]
             if name in locks:
                 f += ["--lock", str(locks[name])]
             return f

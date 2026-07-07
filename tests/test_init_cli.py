@@ -79,6 +79,20 @@ def test_init_bakes_audit_log_by_default(cfg, tmp_path):
     assert str(tmp_path / "audit" / "files.jsonl") in files["args"]
 
 
+def test_init_hostile_server_name_cannot_escape_audit_dir(tmp_path, monkeypatch):
+    from pathlib import Path
+
+    path = tmp_path / "mcp.json"
+    path.write_text(json.dumps({"mcpServers": {"../../escaped": {"command": "npx", "args": ["x"]}}}))
+    monkeypatch.setattr(onboard, "discover", lambda *a, **k: [("claude-code", path)])
+    audit = tmp_path / "audit"
+    cli.main(["init", "--no-lock", "--audit-dir", str(audit)])
+    files = json.loads(path.read_text())["mcpServers"]["../../escaped"]
+    baked = files["args"][files["args"].index("--audit-log") + 1]
+    # The baked audit path must resolve to INSIDE audit_dir, not escape via the hostile key.
+    assert Path(baked).resolve().is_relative_to(audit.resolve())
+
+
 def test_init_no_config_found_returns_1(monkeypatch, capsys):
     monkeypatch.setattr(onboard, "discover", lambda *a, **k: [])
     assert cli.main(["init"]) == 1

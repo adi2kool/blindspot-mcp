@@ -130,10 +130,10 @@ def test_apply_egress_fails_open_on_scanner_error(monkeypatch):
     """A scanner exception must degrade to forwarding the call unchanged, never raise."""
     from airlock.enforce import dlp, proxy
 
-    def boom(_args):
+    def boom(*_a, **_k):
         raise RuntimeError("scanner blew up")
 
-    monkeypatch.setattr(dlp, "scan_args", boom)
+    monkeypatch.setattr(dlp, "scan_args_bounded", boom)
     policy = proxy.ProxyPolicy(egress_mode="block")
     args = {"body": AWS_KEY}
     out, blocked = proxy._apply_egress("send_email", args, "send an email", policy, None, False)
@@ -161,6 +161,38 @@ def test_apply_egress_only_scans_exfil_tools():
     out, blocked = proxy._apply_egress("read_note", args, "read a note", policy, None, False)
     assert blocked is None
     assert out is args
+
+
+def test_apply_egress_block_fails_closed_on_incomplete_scan():
+    """A hostile filler leaf drives the scan budget to zero so a trailing secret is never
+    scanned. block mode must NOT be fooled into forwarding: an incomplete scan fails closed."""
+    from airlock.enforce import proxy
+
+    policy = proxy.ProxyPolicy(egress_mode="block")
+    args = {"filler": "x" * 1_000_001, "body": AWS_KEY}  # secret leaf unscanned (budget hit)
+    _out, blocked = proxy._apply_egress("send_email", args, "send an email", policy, None, False)
+    assert blocked is not None  # blocked despite no finding, because the scan was incomplete
+
+
+def test_apply_egress_redact_blocks_on_incomplete_single_field():
+    """A single >1MB field truncates; the secret past the cut is unscanned. redact can't
+    safely strip what it did not see, so it fails closed to a block."""
+    from airlock.enforce import proxy
+
+    policy = proxy.ProxyPolicy(egress_mode="redact")
+    args = {"body": "lorem " * 180_000 + " " + AWS_KEY}
+    _out, blocked = proxy._apply_egress("send_email", args, "send an email", policy, None, False)
+    assert blocked is not None
+
+
+def test_apply_egress_annotate_forwards_even_if_incomplete():
+    """annotate never blocks, so an incomplete scan still forwards (records-only mode)."""
+    from airlock.enforce import proxy
+
+    policy = proxy.ProxyPolicy(egress_mode="annotate")
+    args = {"filler": "x" * 1_000_001, "body": AWS_KEY}
+    out, blocked = proxy._apply_egress("send_email", args, "send an email", policy, None, False)
+    assert blocked is None and out is args
 
 
 def test_apply_egress_block_fails_closed_on_ledger_error():

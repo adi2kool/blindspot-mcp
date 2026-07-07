@@ -41,6 +41,11 @@ from dataclasses import dataclass
 # forwarded, same as the rest of the proxy's best-effort posture).
 _MAX_DEPTH = 16
 _MAX_TOTAL_CHARS = 1_000_000
+# Bound the NUMBER of nodes visited, not just characters scanned: a hostile args structure
+# that is wide in NON-string values (a list/dict of millions of ints/bools/None) never
+# decrements the character budget, so without a node cap the walk is a synchronous
+# event-loop-stall DoS. Hitting either cap marks the scan INCOMPLETE (see scan_args_bounded).
+_MAX_NODES = 200_000
 
 _REDACTION = "[REDACTED:{name}]"
 
@@ -191,43 +196,71 @@ def scan_value(s: str, detectors: tuple[_Detector, ...] = DEFAULT_DETECTORS) -> 
     return sorted(set(hits), key=lambda t: (t[1], t[2]))
 
 
-def scan_args(
+def scan_args_bounded(
     arguments: object, detectors: tuple[_Detector, ...] = DEFAULT_DETECTORS
-) -> list[Finding]:
-    """Recursively scan the string values of a tool-call arguments structure.
+) -> tuple[list[Finding], bool]:
+    """Recursively scan the string leaves of a tool-call arguments structure.
 
-    Walks dict values and list items to bounded depth, scanning each string leaf. Numbers,
-    booleans, and None carry no secret string and are skipped. Depth and a total-character
-    budget bound the work so a pathological argument cannot stall the event loop; when the
-    budget is exhausted the remaining bytes are left unscanned (fail-open)."""
+    Returns (findings, complete). `complete` is False when the walk stopped before examining
+    all content - a string longer than the remaining character budget (its tail is unscanned),
+    the character or node budget exhausted, or depth exceeded. This distinction is
+    load-bearing: a caller enforcing block/redact must treat an INCOMPLETE scan as "a secret
+    may be present" and fail CLOSED, because a hostile client can drive the budget to zero
+    with a large filler value (or a single oversized field) and slip a real secret into the
+    unscanned tail. Numbers/booleans/None carry no secret string and are skipped, but still
+    count against the node budget so a wide non-string structure cannot stall the loop."""
     findings: list[Finding] = []
     budget = _MAX_TOTAL_CHARS
+    nodes = _MAX_NODES
+    incomplete = False
 
     def walk(node: object, path: tuple[str | int, ...], depth: int) -> None:
-        nonlocal budget
-        if depth > _MAX_DEPTH or budget <= 0:
+        nonlocal budget, nodes, incomplete
+        if nodes <= 0:
+            incomplete = True
+            return
+        nodes -= 1
+        if depth > _MAX_DEPTH:
+            incomplete = True
             return
         if isinstance(node, str):
+            if budget <= 0:
+                incomplete = True
+                return
+            if len(node) > budget:
+                incomplete = True  # tail past the budget is unscanned; a secret there is missed
             s = node[:budget]
             budget -= len(node)
             for det, start, end in scan_value(s, detectors):
                 findings.append(Finding(det, path, start, end))
         elif isinstance(node, dict):
             for k, v in node.items():
-                if budget <= 0:
+                if nodes <= 0:
+                    incomplete = True
                     return
-                # Keep the ACTUAL key in the path (not str(k)) so redact_args' _navigate
-                # can look it up even for a non-string key. JSON args are string-keyed, so
-                # this is normally a no-op, but it keeps redaction sound for any dict.
+                # Keep the ACTUAL key in the path (not str(k)) so redact_args' _navigate can
+                # look it up even for a non-string key. JSON args are string-keyed, so this is
+                # normally a no-op, but it keeps redaction sound for any dict.
                 walk(v, path + (k,), depth + 1)
         elif isinstance(node, (list, tuple)):
             for i, v in enumerate(node):
-                if budget <= 0:
+                if nodes <= 0:
+                    incomplete = True
                     return
                 walk(v, path + (i,), depth + 1)
 
     walk(arguments, (), 0)
-    return findings
+    # Return COMPLETE (True = every leaf was fully scanned), the inverse of the `incomplete`
+    # flag the walk accumulates. Callers fail closed when this is False.
+    return findings, not incomplete
+
+
+def scan_args(
+    arguments: object, detectors: tuple[_Detector, ...] = DEFAULT_DETECTORS
+) -> list[Finding]:
+    """The findings from a bounded scan (dropping the completeness flag). Callers that must
+    fail closed on an incomplete scan use scan_args_bounded directly."""
+    return scan_args_bounded(arguments, detectors)[0]
 
 
 def _merge_spans(spans: list[tuple[int, int, str]]) -> list[tuple[int, int, str]]:

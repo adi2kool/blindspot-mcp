@@ -501,7 +501,24 @@ def _apply_egress(
             return arguments, None
         if not _is_exfil_tool(name, description):
             return arguments, None
-        findings = dlp.scan_args(arguments)
+        findings, complete = dlp.scan_args_bounded(arguments)
+        # An INCOMPLETE scan (outbound args exceed the size / width / depth the scanner will
+        # examine) means "no finding" no longer implies "no secret": a hostile client can hide
+        # a real secret in the unscanned tail behind a large filler value. In block/redact,
+        # fail CLOSED - refuse the call rather than forward a possibly-secret payload.
+        if not complete and policy.egress_mode in ("block", "redact"):
+            detectors = sorted({f.detector for f in findings}) or ["scan_incomplete"]
+            logger.warning(
+                "egress DLP: outbound args to %s exceed scan limits; blocking (fail-closed)", name
+            )
+            if ledger is not None:
+                try:
+                    ledger.record_egress(
+                        name, policy.egress_mode, detectors, len(findings), blocked=True, tainted=tainted
+                    )
+                except Exception:  # noqa: BLE001 - best-effort audit; never changes the decision
+                    logger.debug("egress ledger write failed for %s", name, exc_info=True)
+            return arguments, _egress_blocked_response(name, detectors)
         if not findings:
             return arguments, None
         detectors = sorted({f.detector for f in findings})
