@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import time
 
-from blindspot.models import (
+from airlock.models import (
     AttackClass,
     Finding,
     Origin,
@@ -18,12 +18,12 @@ from blindspot.models import (
     Severity,
     Span,
 )
-from blindspot.provenance.integrity import hash_body
-from blindspot.provenance.tagger import tag, tag_meta
-from blindspot.report import render_sarif, validate_sarif
-from blindspot.sanitize import strip_invisible
-from blindspot.scan.detectors.patterns import scan_text
-from blindspot.scan.drift import diff_surfaces, surface_hash
+from airlock.provenance.integrity import hash_body
+from airlock.provenance.tagger import tag, tag_meta
+from airlock.report import render_sarif, validate_sarif
+from airlock.sanitize import strip_invisible
+from airlock.scan.detectors.patterns import scan_text
+from airlock.scan.drift import diff_surfaces, surface_hash
 
 
 def test_exfil_scanner_no_redos_on_url_run():

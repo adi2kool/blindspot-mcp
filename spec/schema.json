@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://blindspot.dev/spec/x-mcp-provenance/v0/schema.json",
+  "$id": "https://airlock.dev/spec/x-mcp-provenance/v0/schema.json",
   "title": "x-mcp-provenance/v0",
   "description": "The provenance annotation object carried under the key 'x-mcp-provenance/v0' inside an MCP content item's _meta. See spec/convention.md sections 4 through 7. Consumers MUST ignore unknown fields and treat an unknown trust level as untrusted.",
   "type": "object",

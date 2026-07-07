@@ -1,5 +1,5 @@
 [project]
-name = "blindspot"
+name = "airlock-mcp"
 dynamic = ["version"]
 description = "An author-side trust-boundary layer for MCP: provenance tagging, a client enforcer, an enforcing proxy, a scanner on-ramp, and an adaptive-attack evaluation."
 readme = "README.md"
@@ -41,12 +41,12 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/adi2kool/blindspot-mcp"
-Repository = "https://github.com/adi2kool/blindspot-mcp"
-Issues = "https://github.com/adi2kool/blindspot-mcp/issues"
+Homepage = "https://github.com/adi2kool/airlock-mcp"
+Repository = "https://github.com/adi2kool/airlock-mcp"
+Issues = "https://github.com/adi2kool/airlock-mcp/issues"
 
 [project.scripts]
-blindspot = "blindspot.cli:main"
+airlock = "airlock.cli:main"
 
 [dependency-groups]
 dev = [
@@ -60,10 +60,10 @@ build-backend = "hatchling.build"
 
 # Single-source the version from the package (no pyproject/__init__ desync on bumps).
 [tool.hatch.version]
-path = "src/blindspot/__init__.py"
+path = "src/airlock/__init__.py"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/blindspot"]
+packages = ["src/airlock"]
 
 [tool.hatch.build.targets.sdist]
 # Keep the scratch client and study working dir out of the source distribution.

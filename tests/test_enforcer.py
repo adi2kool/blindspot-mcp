@@ -8,17 +8,17 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from blindspot.models import Integrity, Origin, PROVENANCE_NAMESPACE, Provenance, Trust
-from blindspot.enforce.middleware import (
+from airlock.models import Integrity, Origin, PROVENANCE_NAMESPACE, Provenance, Trust
+from airlock.enforce.middleware import (
     context_requires_approval,
     enforce,
     parse_provenance,
     split_fences,
 )
-from blindspot.provenance.integrity import hash_body, make_integrity, verify
-from blindspot.provenance.tagger import fence_span, make_nonce, tag, tag_meta, to_meta
-from blindspot.sanitize import strip_invisible
-from blindspot.scan.client import connect, fetch_targets
+from airlock.provenance.integrity import hash_body, make_integrity, verify
+from airlock.provenance.tagger import fence_span, make_nonce, tag, tag_meta, to_meta
+from airlock.sanitize import strip_invisible
+from airlock.scan.client import connect, fetch_targets
 
 FIXTURES = Path(__file__).resolve().parent.parent / "fixtures"
 VULNERABLE = FIXTURES / "vulnerable_server.py"
@@ -86,7 +86,7 @@ def test_integrity_detects_tamper():
 
 def test_integrity_missing_or_wrong_alg_fails_closed():
     assert verify("x", None) is False
-    from blindspot.models import Integrity
+    from airlock.models import Integrity
 
     assert verify("x", Integrity(alg="md5", hash="abc")) is False
 
@@ -184,7 +184,7 @@ def test_quarantined_is_withheld():
     e = enforce("x", to_meta(prov))
     assert e.disposition is Trust.QUARANTINED
     assert not e.instruction_allowed
-    assert "quarantined by blindspot" in e.presentation
+    assert "quarantined by airlock" in e.presentation
 
 
 def test_unknown_trust_level_is_untrusted():
@@ -261,7 +261,7 @@ def test_data_frame_nonce_is_per_call():
 
 
 def test_derived_from_trusted_inputs_is_trusted():
-    from blindspot.provenance.tagger import derive_trust
+    from airlock.provenance.tagger import derive_trust
 
     tagged = tag("summary of two trusted notes", Origin.DERIVED,
                  inputs=[Trust.TRUSTED, Trust.TRUSTED])
@@ -418,7 +418,7 @@ def test_untrusted_framing_strips_invisible_smuggling():
     """The invisible channel is closed on the DATA path too: untrusted/missing-provenance
     content is stripped of invisible-unicode before it is framed, so a tag-smuggled
     instruction cannot ride into the model inside framed data (convention section 3)."""
-    from blindspot.sanitize import TAG_END, TAG_START
+    from airlock.sanitize import TAG_END, TAG_START
 
     smuggle = "".join(chr(TAG_START + ord(c)) for c in "hi")  # invisible tag chars
     e = enforce("visible text " + smuggle, None)  # no provenance -> untrusted, framed

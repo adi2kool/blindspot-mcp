@@ -12,7 +12,7 @@ from pathlib import Path
 import pytest
 from mcp import ClientSession
 
-from blindspot.prevalence.harness import (
+from airlock.prevalence.harness import (
     FAILED,
     MANIFEST_VERSION,
     REFUSED_REMOTE,

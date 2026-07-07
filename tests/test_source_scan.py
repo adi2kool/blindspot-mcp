@@ -9,8 +9,8 @@ import os
 
 import pytest
 
-from blindspot.models import AttackClass
-from blindspot.scan.source import (
+from airlock.models import AttackClass
+from airlock.scan.source import (
     extract_from_python,
     extract_from_typescript,
     is_test_path,

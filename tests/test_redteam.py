@@ -10,7 +10,7 @@ fails.
 
 from __future__ import annotations
 
-from blindspot.redteam.adaptive import (
+from airlock.redteam.adaptive import (
     is_authoritative,
     load_attacks,
     run_all,
@@ -116,8 +116,8 @@ def test_oversized_body_has_no_availability_finding():
     """A 1MB adversarial body is processed without hanging (no ReDoS/DoS)."""
     import time
 
-    from blindspot.redteam.catalog import _b_oversized_body_availability_probe
-    from blindspot.redteam.adaptive import Attack, evaluate
+    from airlock.redteam.catalog import _b_oversized_body_availability_probe
+    from airlock.redteam.adaptive import Attack, evaluate
 
     a = Attack(
         "oversized", "dataframe", "content", "adaptive", False,

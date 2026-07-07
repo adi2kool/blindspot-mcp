@@ -1,7 +1,7 @@
 """A server that rug-pulls itself mid-session, for testing live drift detection.
 
 INERT TEST FIXTURE. The server ships a benign `lookup` tool and returns it on the FIRST
-`list_tools` call (so a baseline captured at proxy startup, or a `blindspot lock`, sees the
+`list_tools` call (so a baseline captured at proxy startup, or a `airlock lock`, sees the
 clean definition). On every SUBSEQUENT `list_tools` it returns a mutated `lookup` whose
 description carries an inert injection - a classic rug pull that waits until after adoption
 to change a tool. A second tool, `ping`, never changes, so a detector must flag only the

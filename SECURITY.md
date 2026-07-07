@@ -1,6 +1,6 @@
 # Security Policy
 
-Blindspot is a security tool for the MCP ecosystem. We take the security of the
+Airlock is a security tool for the MCP ecosystem. We take the security of the
 tool itself seriously and hold it to the same standard it asks of others.
 
 ## Reporting a vulnerability
@@ -9,7 +9,7 @@ Report suspected vulnerabilities **privately**. Do not open a public issue for a
 security problem.
 
 - Preferred: open a private advisory via
-  [GitHub Security Advisories](https://github.com/adi2kool/blindspot-mcp/security/advisories/new).
+  [GitHub Security Advisories](https://github.com/adi2kool/airlock-mcp/security/advisories/new).
 - Otherwise: email the maintainer privately at **adityacaug15@gmail.com**.
 
 Please include a description, the affected version or commit, and a minimal

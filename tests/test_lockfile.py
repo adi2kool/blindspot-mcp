@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 
-from blindspot.lockfile import check, generate_lock, load_lock, restrict_resolver
+from airlock.lockfile import check, generate_lock, load_lock, restrict_resolver
 
 
 def _surface(desc="x"):
@@ -37,7 +37,7 @@ def test_check_malformed_lock():
 
 def test_load_lock_roundtrip(tmp_path):
     lock = generate_lock(_surface(), require_signature=True, allowed_keyids=["k1", "k2"])
-    p = tmp_path / "blindspot.lock"
+    p = tmp_path / "airlock.lock"
     p.write_text(json.dumps(lock))
     loaded = load_lock(p)
     assert loaded["require_signature"] is True

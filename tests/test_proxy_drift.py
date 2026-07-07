@@ -19,10 +19,10 @@ import pytest
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-from blindspot.enforce.proxy import evaluate_drift
-from blindspot.lockfile import generate_lock
-from blindspot.scan.client import connect
-from blindspot.scan.drift import capture_category, capture_surface
+from airlock.enforce.proxy import evaluate_drift
+from airlock.lockfile import generate_lock
+from airlock.scan.client import connect
+from airlock.scan.drift import capture_category, capture_surface
 
 FIXTURES = Path(__file__).resolve().parent.parent / "fixtures"
 MUTATING = FIXTURES / "mutating_server.py"
@@ -65,7 +65,7 @@ def test_evaluate_drift_flags_added_and_removed():
 def _proxy_params(*extra: str) -> StdioServerParameters:
     return StdioServerParameters(
         command=sys.executable,
-        args=["-m", "blindspot.cli", "proxy", str(MUTATING), *extra],
+        args=["-m", "airlock.cli", "proxy", str(MUTATING), *extra],
     )
 
 

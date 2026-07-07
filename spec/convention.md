@@ -224,12 +224,12 @@ The contract above governs the forward path (Resource bodies, Prompt messages, t
 
 The repository implements both sides so the convention can be demonstrated end to end without waiting for third-party adoption:
 
-- `src/blindspot/provenance/tagger.py` sets the item provenance object, applies fencing per section 7, and sanitizes at emit time.
-- `src/blindspot/provenance/integrity.py` computes the hash and the optional signature per section 6.
-- `src/blindspot/enforce/middleware.py` implements the client contract in section 8, including fail-closed handling, authoritative-path sanitization, and action gating.
-- `src/blindspot/enforce/proxy.py` applies the contract for an unmodified client and implements the section 8.1 extensions: it enforces the server-initiated sampling and elicitation channels (framing their content as data, demoting a server system prompt, relaying under `frame` or refusing under `block`); it re-checks the pinned surface on every listing for mid-session drift; and it gates a memory write and tags persisted-under-taint content. `src/blindspot/scan/memory.py` (`scan-memory`) scans a memory server's already-stored entries for injection, and `classify_memory_tool` in `src/blindspot/compose.py` is the memory write/read taxonomy.
+- `src/airlock/provenance/tagger.py` sets the item provenance object, applies fencing per section 7, and sanitizes at emit time.
+- `src/airlock/provenance/integrity.py` computes the hash and the optional signature per section 6.
+- `src/airlock/enforce/middleware.py` implements the client contract in section 8, including fail-closed handling, authoritative-path sanitization, and action gating.
+- `src/airlock/enforce/proxy.py` applies the contract for an unmodified client and implements the section 8.1 extensions: it enforces the server-initiated sampling and elicitation channels (framing their content as data, demoting a server system prompt, relaying under `frame` or refusing under `block`); it re-checks the pinned surface on every listing for mid-session drift; and it gates a memory write and tags persisted-under-taint content. `src/airlock/scan/memory.py` (`scan-memory`) scans a memory server's already-stored entries for injection, and `classify_memory_tool` in `src/airlock/compose.py` is the memory write/read taxonomy.
 - `fixtures/vulnerable_server.py` is the demonstration target: with the enforcer active, the injected resource and prompt are demoted to data and no longer hijack the agent. `fixtures/sampling_server.py`, `fixtures/mutating_server.py`, and `fixtures/memory_server.py` demonstrate the section 8.1 surfaces (reverse channels, mid-session drift, memory poisoning).
-- `src/blindspot/redteam/adaptive.py` is the adaptive-attack harness (section 3 proof): it attacks the reference defense as an adversary who knows how it works and reports attack success under naive versus adaptive attackers, which component each attack targets, and the residual risk. Every in-scope attack fails; only the documented residuals in section 3 succeed.
+- `src/airlock/redteam/adaptive.py` is the adaptive-attack harness (section 3 proof): it attacks the reference defense as an adversary who knows how it works and reports attack success under naive versus adaptive attackers, which component each attack targets, and the residual risk. Every in-scope attack fails; only the documented residuals in section 3 succeed.
 
 ## 12. Open questions
 

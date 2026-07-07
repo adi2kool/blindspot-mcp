@@ -1,8 +1,8 @@
-"""Blindspot Stage 1 scratch client.
+"""Airlock Stage 1 scratch client.
 
 Connects to a fixture server over stdio, enumerates its prompts, resources, and
 tools, and prints their full contents. This is the Stage 1 proof of the surface,
-not the real Phase 1 scanner (that lives at src/blindspot/scan/client.py).
+not the real Phase 1 scanner (that lives at src/airlock/scan/client.py).
 
 Usage:
   uv run python fixtures/scratch_client.py [server_script]

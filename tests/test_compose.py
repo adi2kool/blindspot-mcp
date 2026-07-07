@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from blindspot.compose import (
+from airlock.compose import (
     ResourceInfo,
     ServerSurface,
     ToolInfo,
@@ -22,8 +22,8 @@ from blindspot.compose import (
     render_human,
     render_json,
 )
-from blindspot.models import Severity
-from blindspot.scan.client import connect
+from airlock.models import Severity
+from airlock.scan.client import connect
 
 FIXTURES = Path(__file__).resolve().parent.parent / "fixtures"
 

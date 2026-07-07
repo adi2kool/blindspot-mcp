@@ -31,7 +31,7 @@ def test_count() -> int | None:
 
 def redteam() -> dict:
     """Adaptive red-team totals from the tool's own JSON report."""
-    out = _run(["uv", "run", "blindspot", "redteam", "--format", "json"])
+    out = _run(["uv", "run", "airlock", "redteam", "--format", "json"])
     try:
         d = json.loads(out.stdout)
     except Exception:

@@ -19,14 +19,14 @@ from mcp.server.lowlevel import Server
 from mcp.server.stdio import stdio_server
 from pydantic import AnyUrl
 
-from blindspot.models import Origin
-from blindspot.provenance.emit import (
+from airlock.models import Origin
+from airlock.provenance.emit import (
     tagged_prompt_result,
     tagged_resource_contents,
     tagged_text_content,
 )
 
-server = Server("blindspot-tagged")
+server = Server("airlock-tagged")
 
 # Operator-authored, trusted.
 _POLICY = (

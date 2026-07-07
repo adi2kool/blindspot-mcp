@@ -9,9 +9,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from blindspot.models import AttackClass
-from blindspot.scan.client import connect, fetch_targets
-from blindspot.scan.detectors.patterns import scan_targets
+from airlock.models import AttackClass
+from airlock.scan.client import connect, fetch_targets
+from airlock.scan.detectors.patterns import scan_targets
 
 FIXTURES = Path(__file__).resolve().parent.parent / "fixtures"
 VULNERABLE = FIXTURES / "vulnerable_server.py"

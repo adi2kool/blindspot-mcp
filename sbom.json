@@ -2468,8 +2468,8 @@
     },
     "component": {
       "type": "application",
-      "bom-ref": "blindspot@0.1.0",
-      "name": "blindspot",
+      "bom-ref": "airlock@0.1.0",
+      "name": "airlock",
       "version": "0.1.0",
       "licenses": [
         {
@@ -2478,7 +2478,7 @@
           }
         }
       ],
-      "purl": "pkg:pypi/blindspot@0.1.0"
+      "purl": "pkg:pypi/airlock@0.1.0"
     }
   },
   "serialNumber": "urn:uuid:4860615c-5a1f-4990-bb55-83420f6cdf8e",

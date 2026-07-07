@@ -9,10 +9,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from blindspot.models import LeastPrivIssue, Report, Severity
-from blindspot.report import render_sarif, validate_sarif
-from blindspot.scan.client import connect
-from blindspot.scan.leastpriv import CapabilitySnapshot, audit_session, audit_snapshot
+from airlock.models import LeastPrivIssue, Report, Severity
+from airlock.report import render_sarif, validate_sarif
+from airlock.scan.client import connect
+from airlock.scan.leastpriv import CapabilitySnapshot, audit_session, audit_snapshot
 
 FIXTURES = Path(__file__).resolve().parent.parent / "fixtures"
 VULNERABLE = FIXTURES / "vulnerable_server.py"

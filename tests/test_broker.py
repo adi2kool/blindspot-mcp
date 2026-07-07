@@ -9,15 +9,15 @@ import json
 import pytest
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
-from blindspot.enforce.broker import (
+from airlock.enforce.broker import (
     _summarize_args,
     build_request,
     deny_all_resolver,
     resolve_approval,
     webhook_resolver,
 )
-from blindspot.ledger import Ledger, verify_chain
-from blindspot.provenance.integrity import generate_ed25519_keypair
+from airlock.ledger import Ledger, verify_chain
+from airlock.provenance.integrity import generate_ed25519_keypair
 
 
 def test_summarize_args_never_leaks_values():

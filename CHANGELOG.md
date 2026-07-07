@@ -1,8 +1,19 @@
 # Changelog
 
-Notable changes to Blindspot. Each release is a git tag (`vX.Y.Z`); the portfolio case
+Notable changes to Airlock. Each release is a git tag (`vX.Y.Z`); the portfolio case
 study's revision labels track these versions, so "what changed" reads the same in the repo
 and on the page.
+
+## [v0.2.1] — 2026-07-07 — Airlock: rename + PyPI/Docker distribution
+
+First release under the name **Airlock** (formerly Blindspot), and the first distributed on
+PyPI and GHCR. No functional change to the enforcement engine from v0.2.0.
+
+- Renamed the project, CLI (`airlock`), and import package to **Airlock**; `pip install
+  airlock-mcp`, image `ghcr.io/adi2kool/airlock-mcp`. The spec namespace `x-mcp-provenance`
+  is unchanged.
+- `docs/deploy.md` — copy-paste recipes (Claude Desktop, Cursor, Docker); a tag-triggered
+  `release.yml` builds and publishes to PyPI (Trusted Publishing) and GHCR.
 
 ## [v0.2.0] — 2026-07-07 — Reverse-channel enforcement + a security audit
 

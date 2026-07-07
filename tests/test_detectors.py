@@ -5,10 +5,10 @@ All local, no network, no subprocess. Never contacts a model server.
 
 from __future__ import annotations
 
-from blindspot.models import AttackClass, Finding, Report, ScanTarget, Severity, Span
-from blindspot.report import render_json, render_sarif, validate_sarif
-from blindspot.scan.detectors.judge import Judge
-from blindspot.scan.detectors.patterns import detect_patterns, detect_unicode, scan_text
+from airlock.models import AttackClass, Finding, Report, ScanTarget, Severity, Span
+from airlock.report import render_json, render_sarif, validate_sarif
+from airlock.scan.detectors.judge import Judge
+from airlock.scan.detectors.patterns import detect_patterns, detect_unicode, scan_text
 
 ZERO_WIDTH_RUN = "​‌‍﻿"
 

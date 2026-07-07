@@ -8,17 +8,17 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from blindspot.enforce.middleware import enforce, parse_provenance
-from blindspot.models import Origin, PROVENANCE_NAMESPACE, ScanTarget, Trust
-from blindspot.provenance.emit import tagged_resource_contents, tagged_text_content
-from blindspot.scan.client import connect, fetch_targets
-from blindspot.scan.drift import (
+from airlock.enforce.middleware import enforce, parse_provenance
+from airlock.models import Origin, PROVENANCE_NAMESPACE, ScanTarget, Trust
+from airlock.provenance.emit import tagged_resource_contents, tagged_text_content
+from airlock.scan.client import connect, fetch_targets
+from airlock.scan.drift import (
     capture_surface,
     diff_surfaces,
     make_baseline,
     surface_hash,
 )
-from blindspot.scan.remediate import propose_remediations
+from airlock.scan.remediate import propose_remediations
 
 FIXTURES = Path(__file__).resolve().parent.parent / "fixtures"
 TAGGED = FIXTURES / "tagged_server.py"
@@ -123,7 +123,7 @@ def test_drift_non_object_baseline_exits_cleanly():
     uncaught AttributeError traceback."""
     import json as _json
 
-    from blindspot.cli import main
+    from airlock.cli import main
 
     bad = FIXTURES.parent / "tests" / "_bad_baseline_tmp.json"
     bad.write_text(_json.dumps([1, 2, 3]))  # a list, not a baseline object

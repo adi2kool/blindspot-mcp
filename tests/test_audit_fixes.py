@@ -18,8 +18,8 @@ import pytest
 from mcp import ClientSession, StdioServerParameters, types
 from mcp.client.stdio import stdio_client
 
-from blindspot.compose import classify_memory_tool
-from blindspot.enforce.proxy import (
+from airlock.compose import classify_memory_tool
+from airlock.enforce.proxy import (
     _MAX_ENFORCE_CHARS,
     ProxyPolicy,
     _bound_text,
@@ -27,12 +27,12 @@ from blindspot.enforce.proxy import (
     _enforce_text,
     _wrap_memory_write,
 )
-from blindspot.ledger import EV_ENFORCE, Ledger, verify_chain
-from blindspot.lockfile import generate_lock
-from blindspot.models import Origin, Trust
-from blindspot.scan.client import connect
-from blindspot.scan.drift import capture_surface
-from blindspot.scan.memory import _mutates
+from airlock.ledger import EV_ENFORCE, Ledger, verify_chain
+from airlock.lockfile import generate_lock
+from airlock.models import Origin, Trust
+from airlock.scan.client import connect
+from airlock.scan.drift import capture_surface
+from airlock.scan.memory import _mutates
 
 FIXTURES = Path(__file__).resolve().parent.parent / "fixtures"
 
@@ -54,7 +54,7 @@ async def test_assume_origin_does_not_trust_sampling_content():
 
     params = StdioServerParameters(
         command=sys.executable,
-        args=["-m", "blindspot.cli", "proxy", str(FIXTURES / "sampling_server.py"),
+        args=["-m", "airlock.cli", "proxy", str(FIXTURES / "sampling_server.py"),
               "--assume-origin", "author", "--on-sampling", "frame"],
     )
     async with stdio_client(params) as (read, write):
@@ -134,10 +134,10 @@ def test_wrap_memory_write_fallback_skips_identifier_fields():
     assert not wrapped and out["session_id"] == "abc-123-def-456-very-long-id"
     # A non-content, non-id string IS wrapped by the fallback.
     out2, wrapped2 = _wrap_memory_write({"blob": "some long free-form payload text here"})
-    assert wrapped2 and out2["blob"].startswith("[[BLINDSPOT-UNTRUSTED-MEMORY]]")
+    assert wrapped2 and out2["blob"].startswith("[[AIRLOCK-UNTRUSTED-MEMORY]]")
     # A real content key is wrapped; a sibling id key is left intact.
     out3, wrapped3 = _wrap_memory_write({"id": "k1", "content": "poison"})
-    assert wrapped3 and out3["id"] == "k1" and out3["content"].startswith("[[BLINDSPOT")
+    assert wrapped3 and out3["id"] == "k1" and out3["content"].startswith("[[AIRLOCK")
     # Non-dict arguments are returned unchanged (robustness).
     assert _wrap_memory_write("not-a-dict") == ("not-a-dict", False)
 
@@ -157,7 +157,7 @@ async def test_block_drift_refused_without_a_preceding_list(tmp_path):
 
     params = StdioServerParameters(
         command=sys.executable,
-        args=["-m", "blindspot.cli", "proxy", str(server), "--lock", str(lock), "--on-drift", "block"],
+        args=["-m", "airlock.cli", "proxy", str(server), "--lock", str(lock), "--on-drift", "block"],
     )
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:

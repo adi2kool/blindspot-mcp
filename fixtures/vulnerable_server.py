@@ -1,4 +1,4 @@
-"""Blindspot fixture: a deliberately vulnerable local stdio MCP server.
+"""Airlock fixture: a deliberately vulnerable local stdio MCP server.
 
 INERT TEST FIXTURE. Every payload in this file is inert. Nothing here performs
 network, email, or filesystem I/O. The payloads exist only so the Phase 1 scanner
@@ -58,7 +58,7 @@ _HIDDEN_RESOURCE_INJECTION = (
 # keyword filter for "admin" misses it. INERT.
 _HOMOGLYPH_ADMIN = "аdmin"
 
-mcp = FastMCP("blindspot-vulnerable")
+mcp = FastMCP("airlock-vulnerable")
 
 
 @mcp.resource("notes://internal")

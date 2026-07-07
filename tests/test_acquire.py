@@ -15,9 +15,9 @@ import zipfile
 import httpx
 import pytest
 
-import blindspot.prevalence.acquire as acq
-from blindspot.models import AttackClass
-from blindspot.prevalence.acquire import (
+import airlock.prevalence.acquire as acq
+from airlock.models import AttackClass
+from airlock.prevalence.acquire import (
     MANIFEST_VERSION,
     PackageSpec,
     _bounded_decompress,
@@ -30,7 +30,7 @@ from blindspot.prevalence.acquire import (
     load_source_manifest,
     scan_archive,
 )
-from blindspot.prevalence.harness import SKIPPED_LICENSE
+from airlock.prevalence.harness import SKIPPED_LICENSE
 
 _POISON = (
     'from mcp.server.fastmcp import FastMCP\n'

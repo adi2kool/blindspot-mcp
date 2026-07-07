@@ -21,7 +21,7 @@ resources hides a `SYSTEM OVERRIDE` instruction inside invisible Unicode. The sc
 decodes it and reports where the boundary is violated.
 
 ```bash
-uv run blindspot scan fixtures/vulnerable_server.py
+uv run airlock scan fixtures/vulnerable_server.py
 ```
 
 ```
@@ -61,7 +61,7 @@ from pydantic import AnyUrl
 def proxy(*extra):
     return StdioServerParameters(
         command=sys.executable,
-        args=["-m", "blindspot.cli", "proxy", "fixtures/vulnerable_server.py", *extra],
+        args=["-m", "airlock.cli", "proxy", "fixtures/vulnerable_server.py", *extra],
     )
 
 async def main():
@@ -98,7 +98,7 @@ And the exfiltration attempt, refused before it leaves the boundary:
 
 ```
 isError = True
-[blindspot] BLOCKED: 'send_email' is a side-effecting tool and untrusted content is
+[airlock] BLOCKED: 'send_email' is a side-effecting tool and untrusted content is
 present in this session's context. Per the enforcement contract (convention section 8),
 a side-effecting action derived from untrusted content requires human approval. The call
 was NOT forwarded upstream.
@@ -121,12 +121,12 @@ PORT=3001 npx -y @modelcontextprotocol/server-everything streamableHttp
 
 ```bash
 # In another: scan and audit it over HTTP.
-uv run blindspot scan  --http http://127.0.0.1:3001/mcp
-uv run blindspot audit --http http://127.0.0.1:3001/mcp
+uv run airlock scan  --http http://127.0.0.1:3001/mcp
+uv run airlock audit --http http://127.0.0.1:3001/mcp
 ```
 
 ```
-blindspot: http://127.0.0.1:3001/mcp
+airlock: http://127.0.0.1:3001/mcp
 items scanned: 14   judge: unavailable
 errors: 1
   ! get_prompt 'resource-prompt' failed: Invalid resourceType: example. Must be Text or Blob.
@@ -144,10 +144,10 @@ silence on a legitimate one.
 
 ## Where to go next
 
-- `uv run blindspot compose fixtures/compose_*.py` - three individually-clean servers that
+- `uv run airlock compose fixtures/compose_*.py` - three individually-clean servers that
   jointly enable the lethal trifecta (private data + untrusted content + an exfil path).
-- `uv run blindspot proxy ... --audit-log audit.jsonl --audit-key server.key` then
-  `uv run blindspot verify-log audit.jsonl --key server.pub` - the signed, tamper-evident
+- `uv run airlock proxy ... --audit-log audit.jsonl --audit-key server.key` then
+  `uv run airlock verify-log audit.jsonl --key server.pub` - the signed, tamper-evident
   flight recorder.
-- `uv run blindspot redteam` - attack our own defense as an adaptive adversary and report
+- `uv run airlock redteam` - attack our own defense as an adaptive adversary and report
   the residual risk.

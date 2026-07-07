@@ -7,8 +7,8 @@ smuggling, a keyword split by an invisible) must still fire.
 
 from __future__ import annotations
 
-from blindspot.models import AttackClass
-from blindspot.scan.detectors.patterns import scan_text
+from airlock.models import AttackClass
+from airlock.scan.detectors.patterns import scan_text
 
 
 def _classes(text: str) -> set[AttackClass]:

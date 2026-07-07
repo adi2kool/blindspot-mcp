@@ -1,4 +1,4 @@
-"""Blindspot fixture: the clean twin of vulnerable_server.py.
+"""Airlock fixture: the clean twin of vulnerable_server.py.
 
 This server exposes the identical surface (same resource URI, same prompt name and
 signature, same tools) with realistic but benign content and no payloads. It is the
@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from mcp.server.fastmcp import FastMCP
 
-mcp = FastMCP("blindspot-clean")
+mcp = FastMCP("airlock-clean")
 
 
 @mcp.resource("notes://internal")

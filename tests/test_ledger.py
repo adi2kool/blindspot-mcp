@@ -8,8 +8,8 @@ from __future__ import annotations
 
 import json
 
-from blindspot.ledger import EV_ACTION, EV_ENFORCE, Ledger, verify_chain
-from blindspot.provenance.integrity import generate_ed25519_keypair
+from airlock.ledger import EV_ACTION, EV_ENFORCE, Ledger, verify_chain
+from airlock.provenance.integrity import generate_ed25519_keypair
 
 
 def test_append_builds_a_linked_chain(tmp_path):
@@ -71,7 +71,7 @@ def test_verify_rejects_signature_strip_downgrade(tmp_path):
     """The keyless hash chain is forgeable (an attacker recomputes entry_hash), so the
     signature is the real protection. Rewriting a signed entry and STRIPPING its signature
     must fail verification when the operator key is supplied, not be silently skipped."""
-    from blindspot.ledger import LedgerEntry
+    from airlock.ledger import LedgerEntry
 
     priv, pub = generate_ed25519_keypair()
     path = tmp_path / "audit.jsonl"

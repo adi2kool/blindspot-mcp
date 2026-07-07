@@ -1,24 +1,24 @@
-# Blindspot: Positioning and Prior Art
+# Airlock: Positioning and Prior Art
 
-Status: positioning draft, v0. This document places Blindspot honestly in the research
+Status: positioning draft, v0. This document places Airlock honestly in the research
 and product landscape. It is written for security engineers, so it states what is prior
-art, what Blindspot mirrors, and the one thing that is genuinely ours, without
+art, what Airlock mirrors, and the one thing that is genuinely ours, without
 overclaiming. Read it alongside `spec/convention.md` (how the trust boundary works) and
 `README.md` (current status and the exact counts, which move as the project grows).
 
 The convention it describes (`spec/convention.md`) is a draft (v0), not a ratified
 standard.
 
-Repository: <https://github.com/adi2kool/blindspot-mcp> · Security contact: adityacaug15@gmail.com
+Repository: <https://github.com/adi2kool/airlock-mcp> · Security contact: adityacaug15@gmail.com
 
 ## One-line positioning
 
-Blindspot is a proposed convention plus a reference enforcement contract that carries a
+Airlock is a proposed convention plus a reference enforcement contract that carries a
 typed instruction/data trust boundary through MCP, signs the provenance of tool output at
 runtime with zero changes to the server it fronts, and emits a verifiable record of what
 the enforcer did with each item.
 
-A gateway decides and prevents a dangerous flow at runtime; Blindspot marks what content
+A gateway decides and prevents a dangerous flow at runtime; Airlock marks what content
 an agent is allowed to act on, keeps untrusted content out of the instruction path, and
 signs an attestation of what the enforcer actually did, so you can prove the control was
 in place later.
@@ -34,7 +34,7 @@ author intended from data the server merely fetched or echoed from somewhere unt
 Indirect prompt injection is the direct consequence.
 
 The field's consensus fix is to reintroduce that boundary in architecture rather than to
-rely on prompting the model to behave. Blindspot is a concrete, minimal way to carry that
+rely on prompting the model to behave. Airlock is a concrete, minimal way to carry that
 boundary through the MCP layer so a client can enforce it. It does not make the model
 immune to injected text; the model still sees the content. What it provides is the
 information a client needs to present untrusted content as data, to refuse to act on
@@ -45,32 +45,32 @@ For a security team, the injection risk is only half the pain. The other half is
 accountability. Even where a control exists, it usually leaves a plain log line: an
 assertion, not proof, and one an in-transit attacker (or a careless edit) could have
 altered. When an auditor asks "prove this agent never acted on untrusted content," a log
-line says at most "we would have blocked it." Blindspot addresses both halves: it carries
+line says at most "we would have blocked it." Airlock addresses both halves: it carries
 an explicit, enforceable trust boundary through MCP, and it emits a signed, tamper-evident
 record of every enforcement decision.
 
-## What Blindspot is
+## What Airlock is
 
-Blindspot has four parts, each with a runnable CLI verb (see `README.md`):
+Airlock has four parts, each with a runnable CLI verb (see `README.md`):
 
 - A **scanner** (`scan`) that finds where the boundary is violated on the neglected MCP
   surfaces (Prompts, Resources, and Tool descriptions): local pattern and invisible-unicode detection, an
   optional local-model judge, a least-privilege auditor, and sanitized-rewrite
   remediation. This is the on-ramp.
-- A **provenance library** (`src/blindspot/provenance/`, server side) that lets a server
+- A **provenance library** (`src/airlock/provenance/`, server side) that lets a server
   author mark the origin and trust level of what it emits, carried in the item's `_meta`
   under the namespaced key `x-mcp-provenance/v0` so a non-aware client simply ignores it
   and nothing breaks, with an integrity hash and an optional signature.
-- A **client-side reference enforcer** (`src/blindspot/enforce/middleware.py`) and an
-  **enforcing proxy** (`src/blindspot/enforce/proxy.py`) that implement the convention's
+- A **client-side reference enforcer** (`src/airlock/enforce/middleware.py`) and an
+  **enforcing proxy** (`src/airlock/enforce/proxy.py`) that implement the convention's
   client contract: `trusted` content may be presented as authoritative only after
   integrity verification and authoritative-path sanitization; `untrusted` content is
   presented as data only and never placed in the instruction region; `quarantined` content
   is withheld; and missing or unknown provenance is treated as `untrusted`. It fails
   closed.
-- An **adaptive-attack evaluation** (`redteam`, `src/blindspot/redteam/`) that attacks the
+- An **adaptive-attack evaluation** (`redteam`, `src/airlock/redteam/`) that attacks the
   reference defense as an adversary who knows how it works, and a **cross-server
-  composition analyzer** (`compose`, `src/blindspot/compose.py`) that flags when a set of
+  composition analyzer** (`compose`, `src/airlock/compose.py`) that flags when a set of
   individually-clean servers jointly enables the lethal trifecta.
 
 Two design commitments make this deployable today rather than after an ecosystem shift:
@@ -99,38 +99,38 @@ The differentiator is author-side provenance plus a client enforcement contract,
 content moderation. The protection lives in the client's handling of labeled content, not
 in making the model immune to injected text.
 
-## Honest differentiation: what Blindspot does that gateways and scanners do not
+## Honest differentiation: what Airlock does that gateways and scanners do not
 
 The nearest product neighbor is a runtime dataflow gateway such as Invariant (now part of
 Snyk), which does real, good work: it analyzes flows and **blocks** the dangerous ones at
 runtime, and its Toxic Flow Analysis reasons about multi-tool compositions the way
-Blindspot's `compose` analyzer does. That is a good product and this document does not
-pretend otherwise. Blindspot is positioned alongside a gateway, not as a replacement, and
+Airlock's `compose` analyzer does. That is a good product and this document does not
+pretend otherwise. Airlock is positioned alongside a gateway, not as a replacement, and
 the difference is orthogonal, not a claim to be "better on the same axis."
 
 ### 1. Attest, do not just block
 
-A gateway decides and prevents. Blindspot attests. Per decision, it records the provenance
+A gateway decides and prevents. Airlock attests. Per decision, it records the provenance
 of what entered the context and what the enforcer did with it, under a key an in-transit
 attacker does not hold. When an auditor asks "prove this agent never acted on untrusted
-content," a gateway can say "we would have blocked it"; Blindspot can hand over a
+content," a gateway can say "we would have blocked it"; Airlock can hand over a
 verifiable record.
 
-Concretely, this is the flight recorder (`src/blindspot/ledger.py`): a signed,
+Concretely, this is the flight recorder (`src/airlock/ledger.py`): a signed,
 hash-chained, append-only JSONL audit trail of every enforcement and action-gate decision.
 Each entry carries a `prev_hash` and an `entry_hash` over its canonical fields, with an
-optional Ed25519 signature over that hash, so `blindspot verify-log` can prove the trail
+optional Ed25519 signature over that hash, so `airlock verify-log` can prove the trail
 was not edited, reordered, or truncated after the fact. This composes with a gateway rather
 than competing: where a gateway is deployed, the flight recorder can be the tamper-evident
 system of record for its decisions too.
 
 ### 2. Runtime content signing, deployable with zero server changes via the proxy
 
-The genuinely novel claim, stated carefully: Blindspot provides runtime signing of
+The genuinely novel claim, stated carefully: Airlock provides runtime signing of
 tool-returned content, and the enforcing proxy lets you deploy the boundary with no changes
 to the server or the client.
 
-The mechanism (`src/blindspot/provenance/integrity.py`): the integrity block carries an
+The mechanism (`src/airlock/provenance/integrity.py`): the integrity block carries an
 unkeyed `sha-256` hash over the exact emitted body, and an optional `signature`. The hash
 alone detects body tampering but does not stop an active in-transit attacker from
 relabeling `untrusted` content as `trusted` — such an attacker flips the `trust` field and
@@ -143,7 +143,7 @@ downgraded on the wire). Two algorithms are supported, selected by `sig_alg`:
 - `ed25519`, an asymmetric signature bound to a server identity, where the server signs
   with its private key and any client verifies with a published public key it never had to
   share secretly. An optional `keyid` supports public-key discovery via a JWKS-style key
-  set (`src/blindspot/enforce/keys.py`).
+  set (`src/airlock/enforce/keys.py`).
 
 A verifier binds the verification algorithm to the configured key source, never to the
 item's self-declared `sig_alg`, which is what closes a signature algorithm-confusion attack:
@@ -174,7 +174,7 @@ unrecognized custom action verb, on which the gate fails open — the same limit
 scanner and composition classifier carry.
 
 In `--on-action approve`, a gated call can be routed to a human via a webhook
-(`src/blindspot/enforce/broker.py`); a timeout or denial fails closed, and the request and
+(`src/airlock/enforce/broker.py`); a timeout or denial fails closed, and the request and
 decision are recorded in the audit trail.
 
 ### 4. Compose: the lethal-trifecta analysis across servers
@@ -183,7 +183,7 @@ An agent rarely connects to one server. The danger is emergent: each server can 
 individually clean while the combination enables the lethal trifecta — access to private
 data, exposure to untrusted content, and a path to exfiltrate — so an injection carried by
 one server's untrusted content can read another server's private data and send it out
-through a third. `blindspot compose` (`src/blindspot/compose.py`) classifies each connected
+through a third. `airlock compose` (`src/airlock/compose.py`) classifies each connected
 server's surface into the three trifecta legs with a deterministic local taxonomy and flags
 when the union across the set covers all three, distinguishing a jointly-enabled composition
 (no single culprit) from a single-server culprit. It folds in the provenance signal: a
@@ -195,7 +195,7 @@ again, is that the output feeds the enforcer and the attestation, not only a blo
 
 ### 5. Enforce the channels and surfaces others ignore
 
-Most tooling watches the forward path (tool descriptions, tool output). Blindspot's proxy
+Most tooling watches the forward path (tool descriptions, tool output). Airlock's proxy
 also enforces three surfaces that are commonly left open, each an extension of the same
 trust boundary rather than a separate product:
 
@@ -218,9 +218,9 @@ trust boundary rather than a separate product:
 As with the rest of the tool, the honest framing is our read of the landscape, not a proven
 exhaustive survey; each is a small, testable extension of the client enforcement contract.
 
-## What Blindspot mirrors versus what is ours
+## What Airlock mirrors versus what is ours
 
-Blindspot's durable contribution is a convention plus an enforcement contract, not a novel
+Airlock's durable contribution is a convention plus an enforcement contract, not a novel
 primitive. Cryptographic hashing, HMAC, Ed25519, and the idea of a typed trust boundary are
 all prior art. What a convention adds is agreement: a stable, namespaced place to carry
 origin and trust through MCP, and a normative statement of what a conforming client MUST do
@@ -243,15 +243,15 @@ interoperable boundary, and it is the piece designed to outlive any single imple
   the composition and the zero-adoption deployment path are the new part.
 
 We did not originate typed trust boundaries, we did not invent the trust-separation
-architecture, and Blindspot is not an implementation of any of the references below.
+architecture, and Airlock is not an implementation of any of the references below.
 
 ## Prior art, cited without overclaiming
 
 - **CaMeL** (arXiv 2503.18813) makes the strongest academic case for separating a trusted
-  control path from untrusted data by construction. Blindspot's convention is a concrete,
+  control path from untrusted data by construction. Airlock's convention is a concrete,
   shippable MCP-layer expression of the same principle. It is **not** an implementation of
   CaMeL and **not** a claim to have originated the idea.
-- **MCP SEP-1913** proposes a standard trust-annotation vocabulary. Blindspot mirrors it
+- **MCP SEP-1913** proposes a standard trust-annotation vocabulary. Airlock mirrors it
   (`spec/convention.md` §5.1) so a standard-aware client can read its provenance object,
   while keeping `x-mcp-provenance/v0` as the stable carrier. Concretely, a tagging server
   MAY additionally emit `openWorldHint`, `sensitiveHint`, `privateHint`, and `attribution`.
@@ -259,14 +259,14 @@ architecture, and Blindspot is not an implementation of any of the references be
   are emitted and parsed but do not by themselves change any enforcement or gating decision,
   which is driven entirely by `trust`/taint. A conforming client MAY consult them (for
   example to raise a side-effecting action to human approval), but the reference enforcer
-  does not yet do so, and a client MUST NOT raise trust based on any hint. Blindspot tracks
+  does not yet do so, and a client MUST NOT raise trust based on any hint. Airlock tracks
   SEP-1913 rather than competing with it.
 - **Invariant / Snyk Toxic Flow Analysis** is the runtime dataflow-gateway approach
   described above: it reasons about multi-tool compositions and blocks dangerous flows at
-  runtime. Blindspot's `compose` analyzer (`src/blindspot/compose.py`) performs a related
+  runtime. Airlock's `compose` analyzer (`src/airlock/compose.py`) performs a related
   cross-server lethal-trifecta analysis — flagging when the union across a connected set of
   servers covers all three legs even though each server is individually clean. This is prior
-  art for the composition idea; Blindspot's contribution here is a local, deterministic
+  art for the composition idea; Airlock's contribution here is a local, deterministic
   analyzer whose output feeds the enforcer and the attestation, not a new theory of toxic
   flows.
 
@@ -278,7 +278,7 @@ deliberately not cited here until a primary source is supplied.)
 ## The measured proof
 
 The claims above are backed by an adaptive-attack evaluation, not assertion. The harness
-(`src/blindspot/redteam/`) attacks the reference defense as an adversary who knows how it
+(`src/airlock/redteam/`) attacks the reference defense as an adversary who knows how it
 works. Across **56 verified attacks** the defense holds: every in-scope attack, naive and
 adaptive, fails, and only the documented residuals succeed — **five attacks, all of two root
 causes**: a malicious server labeling (and signing) its own content, and an active
@@ -291,11 +291,11 @@ the most recent audit session; re-read `README.md` before quoting any of these n
 they move as the project grows. Every attack payload in the repository is
 an inert fixture; nothing performs network, email, or filesystem I/O against a real target.
 
-## Where Blindspot sits alongside a gateway
+## Where Airlock sits alongside a gateway
 
-Blindspot is not a replacement for a dataflow gateway; the two axes are complementary.
+Airlock is not a replacement for a dataflow gateway; the two axes are complementary.
 
-| | A dataflow gateway / scanner | Blindspot |
+| | A dataflow gateway / scanner | Airlock |
 | --- | --- | --- |
 | Primary action | Decide and prevent a dangerous flow at runtime | Carry a trust label through MCP and enforce data-vs-instruction handling on the client |
 | What it leaves behind | A log line of a block | A signed, hash-chained attestation of each enforcement decision |
@@ -303,7 +303,7 @@ Blindspot is not a replacement for a dataflow gateway; the two axes are compleme
 | Content authenticity | Not the focus | Runtime content signing (HMAC or Ed25519) binding the trust label to the body |
 | Cross-server composition | Toxic Flow Analysis reasons about it | `compose` flags the lethal trifecta and routes the finding into the enforcer |
 
-A gateway answers "should this flow run?" Blindspot answers "prove what the agent was
+A gateway answers "should this flow run?" Airlock answers "prove what the agent was
 allowed to act on, and that a human could gate the side effects" — and where a gateway is
 deployed, its flight recorder can be the system of record for the gateway's own decisions.
 
@@ -314,14 +314,14 @@ GRC team that has to answer for AI agents in production. Their problem is not "i
 safe" in the abstract; it is whether they can demonstrate, on demand, control over what
 their agents acted on — to an auditor, a customer security review, or a regulator. Agents are
 the newest unmanaged actor in the estate: they read email, issues, web pages, and database
-rows, and they can send mail, open pull requests, and call outbound APIs. Blindspot is built
+rows, and they can send mail, open pull requests, and call outbound APIs. Airlock is built
 to produce that evidence as a first-class output, not as a side effect of a log line you
 have to trust.
 
 The compliance backdrop makes this a budgeted problem: the EU AI Act pushes
 logging/record-keeping and human-oversight obligations for higher-risk systems, and SOC 2 /
 ISO control language increasingly wants evidence for automated decisions rather than a policy
-document asserting one exists. Blindspot produces evidence relevant to those obligations; it
+document asserting one exists. Airlock produces evidence relevant to those obligations; it
 is not a certification, and this document does not claim conformance to any specific control
 on your behalf. Treat the mapping as a starting point for your own auditor, not a legal
 opinion.
@@ -341,7 +341,7 @@ disclosed rather than papered over:
   that labels its own malicious instructions as trusted and signs them with its own key
   defeats the convention by definition; that is a supply-chain problem for scanning and
   vetting (and the lockfile/drift detection), not something a content signature can solve.
-- **The model still sees untrusted text.** Blindspot does not make the model immune to
+- **The model still sees untrusted text.** Airlock does not make the model immune to
   injected instructions; it keeps that content out of the instruction region and presents it
   as data. The protection lives in the client's handling.
 - **The action-gate side-effect classifier is a heuristic.** An unrecognized custom action
@@ -361,4 +361,4 @@ disclosed rather than papered over:
 
 ---
 
-Repository: <https://github.com/adi2kool/blindspot-mcp> · Security contact: adityacaug15@gmail.com
+Repository: <https://github.com/adi2kool/airlock-mcp> · Security contact: adityacaug15@gmail.com

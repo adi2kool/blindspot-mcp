@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from blindspot.models import AttackClass
+from airlock.models import AttackClass
 
 # Invisible-unicode helpers (mirror fixtures/vulnerable_server.py).
 ZW = "​‌‍﻿"  # ZWSP ZWNJ ZWJ ZWNBSP

@@ -24,7 +24,7 @@ FIXTURES = Path(__file__).resolve().parent.parent / "fixtures"
 def _proxy_params(upstream: str) -> StdioServerParameters:
     return StdioServerParameters(
         command=sys.executable,
-        args=["-m", "blindspot.cli", "proxy", str(FIXTURES / upstream)],
+        args=["-m", "airlock.cli", "proxy", str(FIXTURES / upstream)],
     )
 
 
@@ -116,7 +116,7 @@ async def test_proxy_infer_flag_is_failsafe_without_llm():
     untagged injection is framed as data, and the audit annotation is attached."""
     params = StdioServerParameters(
         command=sys.executable,
-        args=["-m", "blindspot.cli", "proxy", str(FIXTURES / "hostile_upstream.py"), "--infer"],
+        args=["-m", "airlock.cli", "proxy", str(FIXTURES / "hostile_upstream.py"), "--infer"],
     )
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
@@ -177,7 +177,7 @@ ENFORCEMENT_NS = "x-mcp-provenance/enforcement"
 def _proxy_params_mode(upstream: str, *extra: str) -> StdioServerParameters:
     return StdioServerParameters(
         command=sys.executable,
-        args=["-m", "blindspot.cli", "proxy", str(FIXTURES / upstream), *extra],
+        args=["-m", "airlock.cli", "proxy", str(FIXTURES / upstream), *extra],
     )
 
 
@@ -194,7 +194,7 @@ def _first_meta(result) -> dict:
 def test_is_side_effecting_classifier():
     """The gate covers exfil AND destructive/execution actions, in snake_case and
     camelCase, while pure reads are never gated."""
-    from blindspot.enforce.proxy import _is_side_effecting
+    from airlock.enforce.proxy import _is_side_effecting
 
     # exfil, snake_case
     assert _is_side_effecting("send_email", "send an email message to a recipient")
@@ -218,7 +218,7 @@ def test_is_side_effecting_classifier():
 def test_is_side_effecting_catches_confusable_verbs():
     """A hostile server cannot hide a side-effecting verb from the gate with fullwidth /
     NFKC-confusable characters or an invisible split - the classifier normalizes first."""
-    from blindspot.enforce.proxy import _is_side_effecting
+    from airlock.enforce.proxy import _is_side_effecting
 
     def fullwidth(s):
         return "".join(chr(ord(c) - 0x20 + 0xFF00) if 0x21 <= ord(c) <= 0x7E else c for c in s)
@@ -234,7 +234,7 @@ def test_gated_response_is_calltoolresult_with_meta():
     validation error (which would drop the BLOCKED message and the action_gated meta)."""
     from mcp import types
 
-    from blindspot.enforce.proxy import ENFORCEMENT_NS, _gated_response
+    from airlock.enforce.proxy import ENFORCEMENT_NS, _gated_response
 
     r = _gated_response("send_email", "block")
     assert isinstance(r, types.CallToolResult)
@@ -245,9 +245,9 @@ def test_gated_response_is_calltoolresult_with_meta():
 
 def test_maybe_taint_only_on_non_trusted():
     """A session taints on anything but clean trusted content."""
-    from blindspot.enforce.middleware import Enforcement
-    from blindspot.enforce.proxy import _Applied, _maybe_taint, _SessionState
-    from blindspot.models import Trust
+    from airlock.enforce.middleware import Enforcement
+    from airlock.enforce.proxy import _Applied, _maybe_taint, _SessionState
+    from airlock.models import Trust
 
     st = _SessionState()
     _maybe_taint(st, None)
@@ -375,12 +375,12 @@ async def test_proxy_taints_on_non_text_content_then_gates():
 async def test_proxy_writes_verifiable_audit_log(tmp_path):
     """--audit-log produces a hash-chained trail the verifier confirms is intact, with an
     entry per enforced item and the action-gate decision."""
-    from blindspot.ledger import verify_chain
+    from airlock.ledger import verify_chain
 
     log = tmp_path / "audit.jsonl"
     params = StdioServerParameters(
         command=sys.executable,
-        args=["-m", "blindspot.cli", "proxy", str(FIXTURES / "hostile_upstream.py"),
+        args=["-m", "airlock.cli", "proxy", str(FIXTURES / "hostile_upstream.py"),
               "--on-action", "block", "--audit-log", str(log)],
     )
     async with stdio_client(params) as (read, write):
@@ -399,14 +399,14 @@ def test_proxy_refuses_to_start_on_lock_drift(tmp_path):
     """A trust lockfile pinned to one server refuses to front a different (drifted) one."""
     import subprocess
 
-    lockpath = tmp_path / "blindspot.lock"
+    lockpath = tmp_path / "airlock.lock"
     gen = subprocess.run(
-        [sys.executable, "-m", "blindspot.cli", "lock", str(FIXTURES / "tagged_server.py"), "--out", str(lockpath)],
+        [sys.executable, "-m", "airlock.cli", "lock", str(FIXTURES / "tagged_server.py"), "--out", str(lockpath)],
         capture_output=True, text=True, timeout=60,
     )
     assert gen.returncode == 0 and lockpath.exists()
     run = subprocess.run(
-        [sys.executable, "-m", "blindspot.cli", "proxy", str(FIXTURES / "hostile_upstream.py"), "--lock", str(lockpath)],
+        [sys.executable, "-m", "airlock.cli", "proxy", str(FIXTURES / "hostile_upstream.py"), "--lock", str(lockpath)],
         capture_output=True, text=True, input="", timeout=60,
     )
     assert run.returncode == 3
@@ -443,7 +443,7 @@ async def test_proxy_approval_webhook_approve_forwards(tmp_path):
     try:
         params = StdioServerParameters(
             command=sys.executable,
-            args=["-m", "blindspot.cli", "proxy", str(FIXTURES / "hostile_upstream.py"),
+            args=["-m", "airlock.cli", "proxy", str(FIXTURES / "hostile_upstream.py"),
                   "--on-action", "approve", "--approval-webhook", f"http://127.0.0.1:{port}/a",
                   "--approval-timeout", "10"],
         )
@@ -464,7 +464,7 @@ async def test_proxy_approval_webhook_deny_holds(tmp_path):
     try:
         params = StdioServerParameters(
             command=sys.executable,
-            args=["-m", "blindspot.cli", "proxy", str(FIXTURES / "hostile_upstream.py"),
+            args=["-m", "airlock.cli", "proxy", str(FIXTURES / "hostile_upstream.py"),
                   "--on-action", "approve", "--approval-webhook", f"http://127.0.0.1:{port}/a",
                   "--approval-timeout", "10"],
         )

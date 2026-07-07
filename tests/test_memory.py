@@ -17,11 +17,11 @@ import pytest
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-from blindspot.compose import classify_memory_tool
-from blindspot.enforce.proxy import _MEM_ENVELOPE, _is_side_effecting, _wrap_memory_write
-from blindspot.scan.client import connect
-from blindspot.scan.detectors.patterns import scan_targets
-from blindspot.scan.memory import fetch_memory_entries
+from airlock.compose import classify_memory_tool
+from airlock.enforce.proxy import _MEM_ENVELOPE, _is_side_effecting, _wrap_memory_write
+from airlock.scan.client import connect
+from airlock.scan.detectors.patterns import scan_targets
+from airlock.scan.memory import fetch_memory_entries
 
 FIXTURES = Path(__file__).resolve().parent.parent / "fixtures"
 MEMORY = FIXTURES / "memory_server.py"
@@ -75,7 +75,7 @@ async def test_scan_memory_finds_poisoned_entry():
 def _proxy_params(*extra: str) -> StdioServerParameters:
     return StdioServerParameters(
         command=sys.executable,
-        args=["-m", "blindspot.cli", "proxy", str(MEMORY), *extra],
+        args=["-m", "airlock.cli", "proxy", str(MEMORY), *extra],
     )
 
 
@@ -113,4 +113,4 @@ async def test_annotate_tags_persisted_untrusted_content():
             # The content persisted (annotate forwards), but carries the untrusted-memory
             # envelope so a later recall attributes it - provenance survived persistence.
             assert "POISONMARK" in after
-            assert "BLINDSPOT-UNTRUSTED-MEMORY" in after
+            assert "AIRLOCK-UNTRUSTED-MEMORY" in after

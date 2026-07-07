@@ -37,7 +37,7 @@ third-party endpoint, get counsel; jurisdiction matters.
 
 ## Safety guardrails (enforced by the harness)
 
-The harness (`src/blindspot/prevalence/`) encodes these so scope is not a matter of
+The harness (`src/airlock/prevalence/`) encodes these so scope is not a matter of
 discipline alone:
 
 1. **Initiates no tool call and no state-changing request.** It uses the scanner's read
@@ -79,11 +79,11 @@ discipline alone:
 
 ```bash
 # Self-test / demo over this repo's own fixtures (no third-party downloads):
-uv run blindspot prevalence study/example_manifest.json
+uv run airlock prevalence study/example_manifest.json
 
 # A real run: add real OSS servers to a manifest, install each locally (you authorize each
 # download), then point the study at it. Publish the aggregate anonymized first:
-uv run blindspot prevalence study/real_manifest.json --anonymize --format json
+uv run airlock prevalence study/real_manifest.json --anonymize --format json
 ```
 
 Each real server must be installed locally first. A Python server is a script path

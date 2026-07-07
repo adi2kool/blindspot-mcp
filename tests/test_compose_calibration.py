@@ -15,7 +15,7 @@ tracker is private depends on repo visibility the classifier cannot see).
 
 from __future__ import annotations
 
-from blindspot.compose import ServerSurface, ToolInfo, classify_server
+from airlock.compose import ServerSurface, ToolInfo, classify_server
 
 P, U, E = "private_data", "untrusted_content", "exfil"
 

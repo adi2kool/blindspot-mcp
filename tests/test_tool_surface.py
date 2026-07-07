@@ -8,9 +8,9 @@ must still flag at ERROR. Parameter text is walked through $ref/$defs and nested
 
 from __future__ import annotations
 
-from blindspot.models import AttackClass, Severity, severity_rank
-from blindspot.scan.client import _param_descriptions
-from blindspot.scan.detectors.patterns import scan_text
+from airlock.models import AttackClass, Severity, severity_rank
+from airlock.scan.client import _param_descriptions
+from airlock.scan.detectors.patterns import scan_text
 
 
 def _worst(findings) -> Severity:

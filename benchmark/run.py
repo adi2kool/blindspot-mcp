@@ -27,8 +27,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from cases import Case, load_cases  # noqa: E402
 
-from blindspot.models import AttackClass, ScanTarget  # noqa: E402
-from blindspot.scan.detectors.patterns import scan_text  # noqa: E402
+from airlock.models import AttackClass, ScanTarget  # noqa: E402
+from airlock.scan.detectors.patterns import scan_text  # noqa: E402
 
 RECALL_BAR = 0.90
 FPR_BAR = 0.05
@@ -133,7 +133,7 @@ def evaluate(cases: list[Case], judge=None) -> Metrics:
 
 def _render_human(m: Metrics, verbose: bool) -> str:
     lines = []
-    lines.append("Blindspot detector benchmark (local detector)")
+    lines.append("Airlock detector benchmark (local detector)")
     lines.append(
         f"cases: {m.total}  (poisoned {m.poisoned}, clean {m.clean})"
     )
@@ -192,7 +192,7 @@ def _render_json(m: Metrics) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Blindspot detector benchmark")
+    parser = argparse.ArgumentParser(description="Airlock detector benchmark")
     parser.add_argument("--json", action="store_true", help="emit JSON metrics")
     parser.add_argument("--judge", choices=["on", "off"], default="off",
                         help="fold in the optional local judge (default off)")
@@ -201,7 +201,7 @@ def main(argv: list[str] | None = None) -> int:
 
     judge = None
     if args.judge == "on":
-        from blindspot.scan.detectors.judge import Judge
+        from airlock.scan.detectors.judge import Judge
 
         judge = Judge(mode="on")
 

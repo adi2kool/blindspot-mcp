@@ -18,10 +18,10 @@ neutralize. None of it is functional attack code.
   MCP Server so it emits provenance in each item's `_meta`. Operator-authored
   content is tagged trusted; content it fetched from a third party is honestly
   tagged external/untrusted and carries an inert injection, so the reference client
-  enforcer (`blindspot guard`) can demonstrate demoting it to data. Also inert.
+  enforcer (`airlock guard`) can demonstrate demoting it to data. Also inert.
 - `compose_files_server.py`, `compose_web_server.py`, `compose_mailer_server.py`:
   three clean single-purpose servers for the Phase 3 cross-server composition demo
-  (`blindspot compose`). The files server supplies only the private-data leg, the web
+  (`airlock compose`). The files server supplies only the private-data leg, the web
   server only the untrusted-content leg, and the mailer only the exfiltration leg.
   Each is individually clean with no injection payloads; only the composition of all
   three enables the lethal trifecta. All tools are inert and perform no real I/O.

@@ -1,6 +1,6 @@
 # Data handling and privacy
 
-Blindspot is designed to run at $0 with nothing leaving the machine by default.
+Airlock is designed to run at $0 with nothing leaving the machine by default.
 This document states exactly what the tool does and does not send anywhere.
 
 ## The deterministic core sends nothing
@@ -21,10 +21,10 @@ no analytics endpoint and no phone-home. Nothing is logged off the machine.
 Three features touch the network, all off by default and all pointed only at an
 endpoint the operator configures:
 
-1. **Semantic judge** (`blindspot scan --judge on`) and **LLM provenance inference**
-   (`blindspot proxy --infer`). These call a model server. The default is a **local**
+1. **Semantic judge** (`airlock scan --judge on`) and **LLM provenance inference**
+   (`airlock proxy --infer`). These call a model server. The default is a **local**
    Ollama instance (`http://localhost:11434`), so nothing leaves the machine. If the
-   operator sets `BLINDSPOT_JUDGE_URL` / `BLINDSPOT_INFER_URL` to a remote endpoint
+   operator sets `AIRLOCK_JUDGE_URL` / `AIRLOCK_INFER_URL` to a remote endpoint
    (for example a free hosted tier), then the content being classified is sent to
    that endpoint — the operator's explicit choice. Both features fail safe: if no
    model is reachable they fall back to the conservative local behavior and never

@@ -1,6 +1,6 @@
 """A2b tests: SEP-1913 trust-annotation alignment.
 
-Blindspot emits and reads the MCP SEP-1913 hint vocabulary (openWorldHint,
+Airlock emits and reads the MCP SEP-1913 hint vocabulary (openWorldHint,
 sensitiveHint, privateHint, attribution) alongside its own origin/trust, so a
 standard-aware client can read our provenance. The hints are additive and do not
 change the enforcement decision (which is driven by `trust`); they feed the action
@@ -9,10 +9,10 @@ gating in A3.
 
 from __future__ import annotations
 
-from blindspot.enforce.middleware import parse_provenance
-from blindspot.models import PROVENANCE_NAMESPACE as NS
-from blindspot.models import Origin
-from blindspot.provenance.tagger import tag_meta
+from airlock.enforce.middleware import parse_provenance
+from airlock.models import PROVENANCE_NAMESPACE as NS
+from airlock.models import Origin
+from airlock.provenance.tagger import tag_meta
 
 
 def test_open_world_hint_derived_from_trust():
@@ -42,7 +42,7 @@ def test_hints_round_trip_through_parse():
 
 def test_hints_are_additive_not_enforcement_changing():
     """A trusted item stays instruction-eligible; the hints do not alter the decision."""
-    from blindspot.enforce.middleware import enforce
+    from airlock.enforce.middleware import enforce
 
     body, meta = tag_meta("operator policy", Origin.AUTHOR)
     e = enforce(body, meta)

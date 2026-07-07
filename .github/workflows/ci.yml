@@ -41,7 +41,7 @@ jobs:
         run: uv run pytest -q
 
       - name: Adaptive red-team (fails if a non-residual attack reaches the instruction path)
-        run: uv run blindspot redteam
+        run: uv run airlock redteam
 
       - name: Detector benchmark (fails below the recall / false-positive bar)
         run: uv run python benchmark/run.py

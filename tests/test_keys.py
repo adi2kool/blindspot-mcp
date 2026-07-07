@@ -7,11 +7,11 @@ and a `.well-known` fetch is fail-open (offline never breaks enforcement).
 
 from __future__ import annotations
 
-from blindspot.enforce.keys import KeyStore, jwks_document, public_key_to_jwk
-from blindspot.enforce.middleware import enforce
-from blindspot.models import Origin, Trust
-from blindspot.provenance.integrity import SIG_ALG_ED25519, generate_ed25519_keypair
-from blindspot.provenance.tagger import tag_meta
+from airlock.enforce.keys import KeyStore, jwks_document, public_key_to_jwk
+from airlock.enforce.middleware import enforce
+from airlock.models import Origin, Trust
+from airlock.provenance.integrity import SIG_ALG_ED25519, generate_ed25519_keypair
+from airlock.provenance.tagger import tag_meta
 
 
 def test_jwk_round_trip():
@@ -69,8 +69,8 @@ def test_jwks_resolved_pubkey_not_accepted_as_hmac_secret():
     import hashlib
     import hmac
 
-    from blindspot.models import PROVENANCE_NAMESPACE as NS
-    from blindspot.provenance.integrity import _signing_payload, hash_body
+    from airlock.models import PROVENANCE_NAMESPACE as NS
+    from airlock.provenance.integrity import _signing_payload, hash_body
 
     _priv, pub = generate_ed25519_keypair()
     store = KeyStore.from_jwks(jwks_document([("s1", pub)]))

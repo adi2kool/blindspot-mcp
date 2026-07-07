@@ -64,7 +64,7 @@ search blocks automated queries, so this pass is npm; a PyPI pass is future work
 Each package was fetched from the registry and its **source scanned in memory**: nothing was
 installed, built, or executed; the archive was never extracted to disk; downloads were
 restricted to the registry CDNs; decompression was bounded against bombs. Reproducible via
-`study/breadth_manifest.json` and `blindspot prevalence-source`.
+`study/breadth_manifest.json` and `airlock prevalence-source`.
 
 ### What the first pass got wrong, and what it taught us
 
@@ -105,7 +105,7 @@ on real servers (four benign patterns correctly down-ranked instead of misflagge
 - **Declared surface, statically.** Static extraction is approximate (it resolves literals,
   f-strings, concatenation, `%`/`.format()`/`.join()`, and module constants, and skips
   test/fixture files); a description assembled fully at runtime, or in a non-source manifest,
-  is out of scope. A dynamic run (`blindspot scan`) covers what static analysis cannot.
+  is out of scope. A dynamic run (`airlock scan`) covers what static analysis cannot.
 - **License-gated denominator.** 192 packages were skipped because no OSS license resolved
   from registry metadata; a curated manifest with declared licenses would scan more.
 - **Local detection only.** These runs used pattern and invisible-unicode detection without
@@ -115,11 +115,11 @@ on real servers (four benign patterns correctly down-ranked instead of misflagge
 
 ```bash
 # static breadth sweep (download + scan, no execution)
-uv run blindspot prevalence-source study/breadth_manifest.json --anonymize --format json
+uv run airlock prevalence-source study/breadth_manifest.json --anonymize --format json
 
 # dynamic runs
-uv run blindspot prevalence study/reference_servers_manifest.json
-uv run blindspot prevalence study/community_manifest.json --anonymize --format json
+uv run airlock prevalence study/reference_servers_manifest.json
+uv run airlock prevalence study/community_manifest.json --anonymize --format json
 ```
 
 ## Disclosure

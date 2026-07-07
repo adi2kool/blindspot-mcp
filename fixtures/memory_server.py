@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from mcp.server.fastmcp import FastMCP
 
-mcp = FastMCP("blindspot-memory")
+mcp = FastMCP("airlock-memory")
 
 # Pre-seeded store. `ticket-42` is the poison: a stored entry that reads as an instruction.
 _STORE: dict[str, str] = {
