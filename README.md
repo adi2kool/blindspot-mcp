@@ -76,6 +76,11 @@ The enforcement surface has since been extended in three directions:
   summary or a self-contained HTML timeline (what was framed, gated, and stopped, with the
   chain shown intact and no secret values), and `airlock proxy --explain` streams every
   enforcement decision live.
+- Onboarding: `airlock init` detects your MCP client config (Claude Desktop / Cursor /
+  Claude Code) and wraps every server behind the proxy in one command - stdio servers via
+  `airlock proxy --exec <cmd>`, remote servers via `--http` - backing up the original and
+  best-effort pinning each surface into a lockfile. `--exec` lets the proxy front any
+  command (npx / uvx / node / a binary), not just a python script.
 
 Runs at $0. The only optional network dependency is a local open-source model for
 the semantic judge; without one, the scanner degrades to local-only detection.
@@ -126,6 +131,17 @@ uv run airlock scan-memory fixtures/memory_server.py
 # Read a server's provenance and run the client enforcer over it. Injected content
 # is demoted to data or quarantined and is never instruction-eligible.
 uv run airlock guard fixtures/tagged_server.py
+
+# ONE-COMMAND ONBOARDING: detect your MCP client config (Claude Desktop / Cursor /
+# Claude Code) and wrap every server behind the proxy - stdio via --exec, remote via
+# --http - backing up the original and pinning each surface into a lockfile. --dry-run
+# shows the plan without writing. Restart the client, then `airlock report` to see it work.
+uv run airlock init --dry-run
+uv run airlock init --on-egress block          # apply, and block secrets from leaving
+
+# Front an ARBITRARY command (npx / uvx / node / binary) as the upstream, not just a
+# python script. This is what init writes into your config for each server.
+uv run airlock proxy --exec -- npx -y @modelcontextprotocol/server-everything
 
 # Run an enforcing PROXY in front of a server. An unmodified MCP client points at the
 # proxy instead of the server and is protected end to end: untrusted content arrives

@@ -7,6 +7,15 @@ and on the page.
 ## [Unreleased]
 
 ### Added
+- **Onboarding: `airlock init`.** Detects a client's MCP config (Claude Desktop / Cursor /
+  Claude Code — a shared `mcpServers` shape) and rewrites every server to route through the
+  enforcing proxy in one command: stdio servers via `airlock proxy --exec <cmd>`, remote
+  servers via `--http`, the original `env` preserved, the original config backed up
+  (`.airlock.bak`), idempotent (no double-wrap), with `--dry-run`. In the same pass it
+  best-effort launches each server to pin its surface into a lockfile (rug-pull defense) and
+  bakes an `--audit-log` path so `airlock report` has data. New `--exec` on `airlock proxy`
+  fronts an arbitrary command (npx / uvx / node / a binary) as the upstream, not just a
+  python script, with the full trust boundary applied.
 - **Egress DLP** (`airlock proxy --on-egress annotate|redact|block`). The proxy now
   inspects OUTBOUND tool-call arguments and stops a secret or high-confidence PII from
   leaving through an exfil-capable tool. Deterministic, $0, fail-open detectors
