@@ -21,6 +21,7 @@
                             [--key PATH] [--key-alg hmac-sha256|ed25519] [--keystore PATH]
                             [--on-action annotate|approve|block]
                             [--on-egress annotate|redact|block] [--explain]
+                            [--taint-context DIR] [--taint-ttl SECONDS]
                             [--audit-log PATH] [--audit-key PATH] [--lock PATH]
                             [--approval-webhook URL] [--approval-timeout SECONDS]
 
@@ -400,6 +401,7 @@ def _cmd_init(args: argparse.Namespace) -> int:
         base_flags += ["--on-egress", args.on_egress]
     audit_dir = Path(args.audit_dir).expanduser() if args.audit_dir else Path.home() / ".airlock" / "audit"
     lock_dir = Path(args.lock_dir).expanduser() if args.lock_dir else Path.home() / ".airlock" / "locks"
+    taint_base = Path.home() / ".airlock" / "taint"
 
     total_wrapped = 0
     for client, path in found:
@@ -428,12 +430,19 @@ def _cmd_init(args: argparse.Namespace) -> int:
                     if _pin_upstream(spec["command"], list(spec.get("args") or []), lp):
                         locks[name] = lp
 
+        # One shared cross-server taint context per config: every server in THIS client gets
+        # the same directory, so untrusted content read via one gates a side-effecting call to
+        # another. The id is derived from the config path so different clients do not share taint.
+        ctx_dir = None if args.no_shared_taint else taint_base / onboard.taint_context_id(str(path))
+
         def flags_for(name, _spec):
             f = list(base_flags)
             if not args.no_audit:
                 # Sanitize the name for the same reason: the baked --audit-log path is opened
                 # (mkdir + append) at proxy runtime, so a traversing name would write outside.
                 f += ["--audit-log", str(audit_dir / f"{onboard.safe_component(name)}.jsonl")]
+            if ctx_dir is not None:
+                f += ["--taint-context", str(ctx_dir)]
             if name in locks:
                 f += ["--lock", str(locks[name])]
             return f
@@ -680,6 +689,8 @@ def _cmd_proxy(args: argparse.Namespace) -> int:
         sampling_mode=getattr(args, "on_sampling", "frame"),
         elicitation_mode=getattr(args, "on_elicitation", "frame"),
         egress_mode=getattr(args, "on_egress", "annotate"),
+        taint_context=getattr(args, "taint_context", None),
+        taint_ttl=getattr(args, "taint_ttl", 3600.0),
     )
     # --explain: stream every enforcement decision to stderr live. Zero core change - it
     # just surfaces the airlock.proxy/enforce INFO logs the proxy already emits at each
@@ -920,6 +931,9 @@ def build_parser() -> argparse.ArgumentParser:
                       help="bake this egress-DLP mode into every wrapped server (default: annotate)")
     init.add_argument("--no-lock", action="store_true",
                       help="do not launch each server to pin its surface into a lockfile")
+    init.add_argument("--no-shared-taint", action="store_true",
+                      help="do not give this client's servers a shared cross-server taint context "
+                      "(each proxy then gates only on its own server's untrusted content)")
     init.add_argument("--no-audit", action="store_true",
                       help="do not bake an --audit-log path into wrapped servers")
     init.add_argument("--audit-dir", metavar="DIR", default=None,
@@ -1126,6 +1140,18 @@ def build_parser() -> argparse.ArgumentParser:
         help="print a live, human-readable stream of every enforcement decision to stderr "
         "(content demoted to data, side-effect calls gated, egress secrets redacted/blocked, "
         "surface drift) as it happens - a proof-of-value view while the proxy runs",
+    )
+    proxy.add_argument(
+        "--taint-context", metavar="DIR",
+        help="cross-server enforcement: a directory shared with the other proxies fronting this "
+        "client's servers. Untrusted content seen by ANY of them taints the whole context, so a "
+        "side-effecting call to a DIFFERENT server is gated too (the lethal trifecta stopped at "
+        "runtime, not just flagged). `airlock init` sets this up automatically.",
+    )
+    proxy.add_argument(
+        "--taint-ttl", type=float, default=3600.0, metavar="SECONDS",
+        help="how long a cross-server taint marker stays live (default: 3600), so a past "
+        "session's taint self-expires instead of gating forever",
     )
     proxy.add_argument(
         "--audit-log", metavar="PATH",

@@ -66,6 +66,13 @@ def test_is_wrapped_idempotency():
     assert onboard.is_wrapped({"command": "airlock", "args": ["proxy", "--exec", "x"]}, ["uvx", "airlock-mcp"]) is True
 
 
+def test_taint_context_id_stable_and_distinct():
+    a = onboard.taint_context_id("/home/u/claude_desktop_config.json")
+    assert a == onboard.taint_context_id("/home/u/claude_desktop_config.json")  # stable
+    assert a != onboard.taint_context_id("/home/u/.cursor/mcp.json")  # per-config
+    assert len(a) == 16 and all(c in "0123456789abcdef" for c in a)
+
+
 def test_safe_component_neutralizes_traversal():
     # A hostile server name (config key) must never yield a path separator, an absolute
     # escape, a leading dot (hidden / traversal), or an empty component.

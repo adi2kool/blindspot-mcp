@@ -45,6 +45,7 @@ from airlock.compose import (
 )
 from airlock.enforce import dlp
 from airlock.enforce.broker import build_request, resolve_approval
+from airlock.enforce.taintbus import SharedTaint
 from airlock.enforce.infer import InferredProvenance, ProvenanceInferer
 from airlock.enforce.middleware import Enforcement, enforce
 from airlock.ledger import (
@@ -96,6 +97,8 @@ class ProxyPolicy:
         sampling_mode: str = "frame",
         elicitation_mode: str = "frame",
         egress_mode: str = "annotate",
+        taint_context: str | None = None,
+        taint_ttl: float = 3600.0,
     ) -> None:
         # assume_origin: when the upstream sends no provenance, tag its content at this
         # origin before enforcing (an operator vouching for a known server, at their
@@ -171,6 +174,14 @@ class ProxyPolicy:
         #   block   : refuse the call outright; do NOT forward upstream (the secret never
         #             leaves the boundary).
         self.egress_mode = egress_mode
+        # taint_context: a directory shared by every proxy fronting the servers of ONE client
+        # (airlock init gives them the same one). When set, untrusted content enforced by any
+        # proxy in the context taints the whole context, so a side-effecting call to a
+        # DIFFERENT server is gated too - the lethal trifecta enforced across servers at
+        # runtime, not just flagged statically. None (default) is single-server, local-only.
+        # taint_ttl bounds how long a taint marker stays live (so a past session self-expires).
+        self.taint_context = taint_context
+        self.taint_ttl = taint_ttl
 
 
 @dataclass
@@ -209,6 +220,26 @@ class _SessionState:
     # same mutated surface does not spam the ledger; a NEW mutation (different hash) is
     # still recorded. Withholding under block happens on every list regardless.
     reported_drift: dict[str, str] = field(default_factory=dict)
+    # Cross-server taint bus (from --taint-context), shared with the other proxies fronting
+    # this client's servers. None disables it (single-server, local-only). See taintbus.py.
+    shared: SharedTaint | None = None
+
+
+def _propagate_taint(state: _SessionState, reason: str) -> None:
+    """Taint this session AND, when a cross-server context is configured, the shared bus so a
+    side-effecting call to a DIFFERENT server in the same context is gated too."""
+    state.tainted = True
+    if state.shared is not None:
+        state.shared.taint(reason)
+
+
+def _session_tainted(state: _SessionState) -> bool:
+    """True if this session is tainted, OR a peer proxy in the same cross-server context has
+    seen untrusted content. Reads the shared bus only while still-untainted and promotes it to
+    local (taint is monotonic), so the per-call gate pays at most one filesystem read."""
+    if not state.tainted and state.shared is not None and state.shared.is_tainted():
+        state.tainted = True
+    return state.tainted
 
 
 def _maybe_taint(state: _SessionState, applied: _Applied | None) -> None:
@@ -217,7 +248,7 @@ def _maybe_taint(state: _SessionState, applied: _Applied | None) -> None:
         return
     e = applied.enforcement
     if e.disposition is not Trust.TRUSTED or e.requires_approval:
-        state.tainted = True
+        _propagate_taint(state, "untrusted content enforced")
 
 
 def evaluate_drift(
@@ -276,7 +307,7 @@ async def _check_list_drift(
     if state.reported_drift.get(category) != cat_hash:
         state.reported_drift[category] = cat_hash
         async with _gate_cm(policy, gate):
-            state.tainted = True
+            _propagate_taint(state, f"mid-session surface drift in {category}")
         logger.warning(
             "mid-session surface drift in %s (mode=%s): %s",
             category, policy.drift_mode, "; ".join(f"{c.kind} {c.name}" for c in changes),
@@ -1101,7 +1132,7 @@ def make_proxy(
                 # it depends only on the static (name, description). Avoids the full regex
                 # battery on every call in the common annotate + no-audit path.
                 mem = None
-                if state.tainted or ledger is not None:
+                if _session_tainted(state) or ledger is not None:
                     if name not in mem_cache:
                         mem_cache[name] = classify_memory_tool(name, tool_descs.get(name, ""))
                     mem = mem_cache[name]
@@ -1114,7 +1145,7 @@ def make_proxy(
                 # whenever a tainted write occurs, even if no content-like field could be
                 # enveloped (e.g. an all-structured knowledge-graph write), so the trail never
                 # silently omits an untrusted persist.
-                if mem == "write" and state.tainted:
+                if mem == "write" and _session_tainted(state):
                     call_args, wrapped = _wrap_memory_write(arguments)
                     if ledger is not None:
                         ledger.append(EV_ENFORCE, surface="memory", ident=name,
@@ -1150,7 +1181,7 @@ def make_proxy(
                         # closed), so this only ATTESTS the cross-session origin; a forged
                         # marker can at most keep content untrusted, never elevate it.
                         if mem == "read" and _MEM_ENVELOPE in (_source_text(c) or ""):
-                            state.tainted = True
+                            _propagate_taint(state, "untrusted-origin memory recalled")
                             if ledger is not None:
                                 ledger.append(EV_ENFORCE, surface="memory", ident=name,
                                               disposition=Trust.UNTRUSTED.value,
@@ -1170,7 +1201,7 @@ def make_proxy(
             # a human approval wait, which would serialize / deadlock the session.
             async with _gate_cm(policy, gate):
                 gated = False
-                if policy.action_mode in ("approve", "block") and state.tainted:
+                if policy.action_mode in ("approve", "block") and _session_tainted(state):
                     desc = tool_descs.get(name)
                     if desc is None:
                         # Not seen via list_tools (a client may call without listing first).
@@ -1189,12 +1220,20 @@ def make_proxy(
                     # Fast path: forward under the lock (keeps decide-then-forward atomic).
                     return await _forward_and_enforce()
 
-            # Gated; the lock is released. Record the decision, then resolve it.
+            # Gated; the lock is released. Record the decision, then resolve it. A gate driven
+            # by a DIFFERENT server's taint (via the shared context) is the cross-server
+            # trifecta caught at runtime - attribute it in the log and the audit trail.
+            cross = bool(state.shared and any(
+                s.get("label") and s.get("label") != upstream_label for s in state.shared.sources()
+            ))
             logger.info(
-                "action-gated tool %s (mode=%s): untrusted content in context", name, policy.action_mode
+                "action-gated tool %s (mode=%s): untrusted content in context%s",
+                name, policy.action_mode, " (CROSS-SERVER)" if cross else "",
             )
             if ledger is not None:
-                ledger.record_action(name, policy.action_mode, gated=True, side_effecting=True)
+                ledger.record_action(
+                    name, policy.action_mode, gated=True, side_effecting=True, cross_server=cross
+                )
             # block, or approve with no resolver configured: refuse (never forwarded).
             if policy.action_mode == "block" or policy.approval_resolver is None:
                 return _gated_response(name, policy.action_mode)
@@ -1251,6 +1290,9 @@ async def run_proxy(
         inferer=ProvenanceInferer() if policy.infer else None,
         upstream_label=upstream,
     )
+    # Cross-server taint: share taint with the other proxies fronting this client's servers.
+    if policy.taint_context:
+        runtime.state.shared = SharedTaint(policy.taint_context, label=upstream, ttl=policy.taint_ttl)
 
     async def _sampling_cb(context, params):
         return await _handle_sampling(runtime, params)

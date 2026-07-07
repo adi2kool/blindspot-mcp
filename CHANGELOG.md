@@ -7,6 +7,15 @@ and on the page.
 ## [Unreleased]
 
 ### Added
+- **Cross-server enforcement (`airlock proxy --taint-context DIR`).** The lethal trifecta is
+  emergent across servers, so it is now enforced across servers at runtime. Every proxy given
+  the same taint-context directory shares a monotonic, TTL-scoped, append-only taint bus:
+  untrusted content read via any one server taints the whole context, so a side-effecting call
+  to a DIFFERENT server is gated too (attributed as `cross_server` in the audit trail). This
+  turns `compose`'s static trifecta warning into runtime prevention. `airlock init` gives all
+  of a client's servers the same context automatically (one config = one agent = one context;
+  `--no-shared-taint` opts out). Local, $0, no daemon; a bus error degrades to per-server local
+  taint. Default (no context) is single-server, byte-identical.
 - **Onboarding: `airlock init`.** Detects a client's MCP config (Claude Desktop / Cursor /
   Claude Code — a shared `mcpServers` shape) and rewrites every server to route through the
   enforcing proxy in one command: stdio servers via `airlock proxy --exec <cmd>`, remote

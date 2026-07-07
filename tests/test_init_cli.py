@@ -38,7 +38,7 @@ def test_init_dry_run_changes_nothing(cfg, capsys):
 
 
 def test_init_wraps_and_backs_up(cfg, capsys):
-    rc = cli.main(["init", "--no-lock", "--no-audit"])
+    rc = cli.main(["init", "--no-lock", "--no-audit", "--no-shared-taint"])
     assert rc == 0
     doc = json.loads(cfg.read_text())
     servers = doc["mcpServers"]
@@ -91,6 +91,24 @@ def test_init_hostile_server_name_cannot_escape_audit_dir(tmp_path, monkeypatch)
     baked = files["args"][files["args"].index("--audit-log") + 1]
     # The baked audit path must resolve to INSIDE audit_dir, not escape via the hostile key.
     assert Path(baked).resolve().is_relative_to(audit.resolve())
+
+
+def test_init_bakes_a_shared_taint_context_by_default(cfg):
+    cli.main(["init", "--no-lock", "--no-audit"])
+    servers = json.loads(cfg.read_text())["mcpServers"]
+    files_args = servers["files"]["args"]
+    remote_args = servers["remote"]["args"]
+    assert "--taint-context" in files_args
+    # Every server in ONE config shares the SAME context (so A gates C).
+    ctx_files = files_args[files_args.index("--taint-context") + 1]
+    ctx_remote = remote_args[remote_args.index("--taint-context") + 1]
+    assert ctx_files == ctx_remote
+
+
+def test_init_no_shared_taint_omits_context(cfg):
+    cli.main(["init", "--no-lock", "--no-audit", "--no-shared-taint"])
+    files_args = json.loads(cfg.read_text())["mcpServers"]["files"]["args"]
+    assert "--taint-context" not in files_args
 
 
 def test_init_no_config_found_returns_1(monkeypatch, capsys):

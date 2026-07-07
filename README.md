@@ -53,7 +53,7 @@ adaptive-attack evaluation are complete.
   plus an exfiltration path). Remaining: the prevalence study over real servers,
   which stays gated behind responsible disclosure.
 
-The enforcement surface has since been extended in three directions:
+The enforcement surface has since been extended in several directions:
 
 - Reverse-channel enforcement: the proxy also enforces the two server->client channels
   (sampling `createMessage` and `elicitation`), framing server-supplied text as data,
@@ -81,6 +81,11 @@ The enforcement surface has since been extended in three directions:
   `airlock proxy --exec <cmd>`, remote servers via `--http` - backing up the original and
   best-effort pinning each surface into a lockfile. `--exec` lets the proxy front any
   command (npx / uvx / node / a binary), not just a python script.
+- Cross-server enforcement: the lethal trifecta is emergent ACROSS servers, so `init` gives a
+  client's servers a shared taint context (`airlock proxy --taint-context`). Untrusted content
+  read via one server gates a side-effecting call to a DIFFERENT server at runtime - turning
+  `compose`'s static trifecta warning into runtime prevention, attributed as cross-server in
+  the audit trail. It is a local, $0, TTL-scoped directory of markers; no daemon.
 
 Runs at $0. The only optional network dependency is a local open-source model for
 the semantic judge; without one, the scanner degrades to local-only detection.
@@ -142,6 +147,14 @@ uv run airlock init --on-egress block          # apply, and block secrets from l
 # Front an ARBITRARY command (npx / uvx / node / binary) as the upstream, not just a
 # python script. This is what init writes into your config for each server.
 uv run airlock proxy --exec -- npx -y @modelcontextprotocol/server-everything
+
+# CROSS-SERVER enforcement: init gives all of a client's servers a SHARED taint context, so
+# an injection read via one server gates a side-effecting call to ANOTHER at runtime (the
+# lethal trifecta stopped across servers, not just flagged). Manually: front two servers with
+# the same --taint-context and run the exfil-capable one with --on-action block. Reading
+# untrusted content via the first then blocks a send from the second.
+uv run airlock proxy fixtures/hostile_upstream.py --taint-context /tmp/airlock-ctx
+uv run airlock proxy fixtures/egress_server.py    --taint-context /tmp/airlock-ctx --on-action block
 
 # Run an enforcing PROXY in front of a server. An unmodified MCP client points at the
 # proxy instead of the server and is protected end to end: untrusted content arrives

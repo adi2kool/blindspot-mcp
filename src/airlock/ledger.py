@@ -231,14 +231,16 @@ class Ledger:
             },
         )
 
-    def record_action(self, tool: str, mode: str, gated: bool, side_effecting: bool) -> LedgerEntry:
-        """Record an action-gate decision (whether a side-effecting call was gated)."""
-        return self.append(
-            EV_ACTION,
-            surface="tool",
-            ident=tool,
-            detail={"mode": mode, "gated": bool(gated), "side_effecting": bool(side_effecting)},
-        )
+    def record_action(
+        self, tool: str, mode: str, gated: bool, side_effecting: bool, cross_server: bool = False
+    ) -> LedgerEntry:
+        """Record an action-gate decision (whether a side-effecting call was gated).
+        `cross_server` is True when the gate was driven by taint another server in the shared
+        context raised - the lethal trifecta enforced across servers at runtime."""
+        detail = {"mode": mode, "gated": bool(gated), "side_effecting": bool(side_effecting)}
+        if cross_server:
+            detail["cross_server"] = True
+        return self.append(EV_ACTION, surface="tool", ident=tool, detail=detail)
 
     def record_egress(
         self,

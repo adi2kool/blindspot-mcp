@@ -14,11 +14,20 @@ each server once to pin its surface into a lockfile (rug-pull defense) in the sa
 
 from __future__ import annotations
 
+import hashlib
 import re
 from dataclasses import dataclass
 from pathlib import Path
 
 CLIENTS = ("claude-desktop", "cursor", "claude-code")
+
+
+def taint_context_id(config_path: str) -> str:
+    """A short, stable id for the cross-server taint context of one client config. Every server
+    in the SAME config shares it (one client = one agent = one taint context), so an injection
+    into any of that client's servers gates a side-effecting call to another; different configs
+    get different ids so unrelated clients do not share taint."""
+    return hashlib.sha256(str(config_path).encode("utf-8")).hexdigest()[:16]
 
 _UNSAFE_NAME = re.compile(r"[^A-Za-z0-9._-]")
 
